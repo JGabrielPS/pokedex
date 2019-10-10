@@ -11,10 +11,12 @@ function formData(event) {
 function getPokemonData(name) {
     axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`)
     .then((response)=>{
-        document.getElementById('pokemon').innerHTML= `
-        <img src=${response.data.sprites.front_shiny} alt='bulbasaur'>
-        `;
+        return response.data;
     });
+}
+
+function displayInfo(pokemonInfo) {
+    
 }
 
 // function listPokemons(quantity) {
