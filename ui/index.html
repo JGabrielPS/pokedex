@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="./styles/normalize.css" />
+    <link rel="stylesheet" href="./styles/skeleton.css" />
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="./src/app.js"></script>
+    <title>Pokedex</title>
+  </head>
+  <body>
+    <div class="container">
+      <form onsubmit="return formData(evt)">
+        <div class="row">
+          <label for="pokemonName">Ingrese el nombre del pokemon</label
+          ><input type="text" id="pokemonName" required="required" />
+        </div>
+        <button type="submit">Consultar</button>
+      </form>
+      <div class="row" id="pokemonResults"></div>
+      <!-- <input type="text">
+        <button type="button" onClick='chooseBulbasaur()'>Choose pokemon</button>
+        <div id="pokemon"></div> -->
+    </div>
+  </body>
+</html>
