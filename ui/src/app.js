@@ -3,7 +3,14 @@ function formData(event) {
     clearList(); //TODO eliminar el contenido de pokemonResults
     const name = document.getElementById('pokemonName').value;
     //busca en la lista y realiza consultas a la poke API con el ID
-    const pokemonInfo = getPokemonData(name);
+    //const pokemonInfo = getPokemonData(name);
+    const pokemonInfo = new Promise((resolve, reject) => {
+        const pokemon = getPokemonData(name)
+        if(pokemon)
+            resolve(pokemon)
+        else
+            reject(error)    
+    })
     //muestra informacion en el DOM
     displayInfo(pokemonInfo);
 }
@@ -12,6 +19,9 @@ function getPokemonData(name) {
     axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`)
     .then((response)=>{
         return response.data;
+    })
+    .catch((error) => {
+        alert(error);
     });
 }
 
