@@ -1,32 +1,38 @@
 function formData(event) {
-    event.preventDefault();
-    clearList(); //TODO eliminar el contenido de pokemonResults
-    const name = document.getElementById('pokemonName').value;
-    //busca en la lista y realiza consultas a la poke API con el ID
-    //const pokemonInfo = getPokemonData(name);
-    const pokemonInfo = new Promise((resolve, reject) => {
-        const pokemon = getPokemonData(name)
-        if(pokemon)
-            resolve(pokemon)
-        else
-            reject(error)    
+  event.preventDefault();
+  clearList(); //TODO eliminar el contenido de pokemonResults
+  const name = document.getElementById("pokemonName").value;
+  //busca en la lista y realiza consultas a la poke API con el ID
+  pokemonInfo(name)
+    .then(pokemonInfo => {
+      //muestra informacion en el DOM
+      displayInfo(pokemonInfo);
     })
-    //muestra informacion en el DOM
-    displayInfo(pokemonInfo);
+    .catch(error => {});
 }
 
+const pokemonInfo = name => {
+  return new Promise((resolve, reject) => {
+    const response = getPokemonData(name);
+    if (typeof response !== Error) resolve(response);
+    else reject(response);
+  });
+};
+
 function getPokemonData(name) {
-    axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`)
-    .then((response)=>{
-        return response.data;
+  axios
+    .get(`https://pokeapi.co/api/v2/pokemon/${name}`)
+    .then(response => {
+      return response.data;
     })
-    .catch((error) => {
-        alert(error);
+    .catch(error => {
+      return error;
     });
 }
 
 function displayInfo(pokemonInfo) {
-    
+  document.getElementById("pokemonResults").innerHTML = `
+    <img src=${pokemonInfo.sprites.front_shiny} alt='${pokemonInfo.name}'>`;
 }
 
 // function listPokemons(quantity) {
@@ -35,7 +41,7 @@ function displayInfo(pokemonInfo) {
 //         .then((response) => {
 //             if(err) throw err;
 //             return response.data;
-//         }) 
+//         })
 //     }
 // }
 
