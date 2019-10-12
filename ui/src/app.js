@@ -8,7 +8,9 @@ function formData(event) {
       //muestra informacion en el DOM
       displayInfo(pokemonInfo);
     })
-    .catch(error => {});
+    .catch(error => {
+      alert(error);
+    });
 }
 
 const pokemonInfo = name => {
@@ -20,19 +22,25 @@ const pokemonInfo = name => {
 };
 
 function getPokemonData(name) {
-  axios
-    .get(`https://pokeapi.co/api/v2/pokemon/${name}`)
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
-      return error;
-    });
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`https://pokeapi.co/api/v2/pokemon/${name}`)
+      .then(response => {
+        resolve(response.data);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
 }
 
 function displayInfo(pokemonInfo) {
   document.getElementById("pokemonResults").innerHTML = `
     <img src=${pokemonInfo.sprites.front_shiny} alt='${pokemonInfo.name}'>`;
+}
+
+function clearList() {
+    document.getElementById("pokemonResults").innerHTML = "";
 }
 
 // function listPokemons(quantity) {
@@ -43,13 +51,4 @@ function displayInfo(pokemonInfo) {
 //             return response.data;
 //         })
 //     }
-// }
-
-// function chooseBulbasaur(){
-//     axios.get('https://pokeapi.co/api/v2/pokemon/1')
-//     .then((response)=>{
-//         document.getElementById('pokemon').innerHTML= `
-//         <img src=${response.data.sprites.front_shiny} alt='bulbasaur'>
-//         `;
-//     });
 // }

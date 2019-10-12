@@ -7,12 +7,11 @@
     <link rel="stylesheet" href="./styles/normalize.css" />
     <link rel="stylesheet" href="./styles/skeleton.css" />
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="./src/app.js"></script>
     <title>Pokedex</title>
   </head>
   <body>
     <div class="container">
-      <form onsubmit="return formData(evt)">
+      <form onSubmit="formData(event)">
         <div class="row">
           <label for="pokemonName">Ingrese el nombre del pokemon</label
           ><input type="text" id="pokemonName" required="required" />
@@ -20,9 +19,12 @@
         <button type="submit">Consultar</button>
       </form>
       <div class="row" id="pokemonResults"></div>
-      <!-- <input type="text">
-        <button type="button" onClick='chooseBulbasaur()'>Choose pokemon</button>
-        <div id="pokemon"></div> -->
     </div>
+
+    <!-- <input type="text" id="pokemonName"/>
+    <button type="button" onClick="formData()">Choose pokemon</button>
+    <div id="pokemonResults"></div> -->
+
+    <script src="./src/app.js"></script>
   </body>
 </html>
