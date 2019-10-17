@@ -1,25 +1,35 @@
+const pokemonList = [];
+
 function formData(event) {
-  event.preventDefault();
   clearList(); //TODO eliminar el contenido de pokemonResults
+  event.preventDefault();
   const name = document.getElementById("pokemonName").value;
   //busca en la lista y realiza consultas a la poke API con el ID
   pokemonInfo(name)
     .then(pokemonInfo => {
       //muestra informacion en el DOM
       displayInfo(pokemonInfo);
+      //guardo informacion del pokemon
+      savePokemonList(pokemonInfo);
     })
     .catch(error => {
-      alert(error);
+      displayError(error);
     });
 }
 
-const pokemonInfo = name => {
+function formList(event) {
+  clearList();
+  event.preventDefault();
+  listPokemons();
+}
+
+function pokemonInfo(name) {
   return new Promise((resolve, reject) => {
     const response = getPokemonData(name);
-    if (typeof response !== Error) resolve(response);
+    if (typeof response !== "string") resolve(response);
     else reject(response);
   });
-};
+}
 
 function getPokemonData(name) {
   return new Promise((resolve, reject) => {
@@ -29,26 +39,70 @@ function getPokemonData(name) {
         resolve(response.data);
       })
       .catch(error => {
-        reject(error);
+        reject(handleError(error, "pokemon", name));
       });
   });
 }
 
 function displayInfo(pokemonInfo) {
+  document.getElementById("pokemonResults").innerHTML += `
+    <div class="card"> 
+    <img src=${pokemonInfo.sprites.front_shiny} alt='${pokemonInfo.name}'>
+    <div class="row">
+      <p>Nombre: ${pokemonInfo.name} shiny</p>
+      <p>Tipos: ${pokemonInfo.types.map(e => e.type.name)}</p>
+      <p>Peso: ${pokemonInfo.weight} lbs</p>
+      <p>Habilidades: ${pokemonInfo.abilities.map(e => e.ability.name)}</p>
+    </div>
+    </div>`;
+}
+
+function displayError(error) {
   document.getElementById("pokemonResults").innerHTML = `
-    <img src=${pokemonInfo.sprites.front_shiny} alt='${pokemonInfo.name}'>`;
+    <p>${error}</p>
+  `;
 }
 
 function clearList() {
-    document.getElementById("pokemonResults").innerHTML = "";
+  document.getElementById("pokemonResults").innerHTML = "";
 }
 
-// function listPokemons(quantity) {
-//     for (let i = 1; i <= quantity; i++) {
-//         axios.get(`https://pokeapi.co/api/v2/pokemon/${i}`)
-//         .then((response) => {
-//             if(err) throw err;
-//             return response.data;
-//         })
-//     }
-// }
+function handleError(error, typeElement, item) {
+  switch (error.response.status) {
+    case 404:
+      return `Status Code: 404. Message: ${error.response.data} ${typeElement} ${item}`;
+
+    default:
+      return "Error no especificado";
+  }
+}
+
+function savePokemonList(pokemon) {
+  if (pokemonList.every(e => e.name !== pokemon.name)) {
+    pokemonList.push({
+      id: pokemon.order,
+      name: pokemon.name
+    });
+    console.log(pokemonList);
+  } else {
+    console.log("El pokemon ya esta en la lista");
+  }
+}
+
+function listPokemons() {
+  for (let i = 0; i < 10; i++) {
+    if (i < pokemonList.length) {
+      const pokemon = pokemonList[i].name;
+      console.log(pokemon);
+      pokemonInfo(pokemon)
+        .then(response => {
+          displayInfo(response);
+        })
+        .catch(error => {
+          console.log(handleError(error, "pokemon", pokemon.name));
+        });
+    } else {
+      i = 10;
+    }
+  }
+}
