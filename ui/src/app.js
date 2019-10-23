@@ -1,4 +1,16 @@
-const pokemonList = [];
+const pokemonList = [
+  { id: 94, name: "abra" },
+  { id: 134, name: "gengar" },
+  { id: 34, name: "pichu" },
+  { id: 43, name: "raichu" },
+  { id: 316, name: "entei" },
+  { id: 227, name: "mew" },
+  { id: 7, name: "charizard" },
+  { id: 12, name: "blastoise" },
+  { id: 180, name: "scizor" },
+  { id: 236, name: "feraligatr" }
+];
+
 let limit = 0;
 
 function formData(event) {
