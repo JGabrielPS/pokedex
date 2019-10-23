@@ -7,22 +7,31 @@
     <link rel="stylesheet" href="./styles/normalize.css" />
     <link rel="stylesheet" href="./styles/skeleton.css" />
     <link rel="stylesheet" href="./styles/style.css" />
+    <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <title>Pokedex</title>
   </head>
   <body>
     <div class="container">
-      <form onSubmit="formData(event)">
-        <div class="row">
-          <label for="pokemonName">Ingrese el nombre del pokemon</label
-          ><input type="text" id="pokemonName" required="required" />
-        </div>
-        <button type="submit">Consultar</button>
-      </form>
       <div class="row">
-        <form onSubmit="formList(event)"><button type="submit">Listar pokemones</button></form>
+        <div class="six column"></div>
+        <div class="three column">
+          <form onSubmit="formData(event)">
+            <div class="row">
+              <label for="pokemonName">Ingrese el nombre del pokemon</label
+              ><input type="text" id="pokemonName" required="required" />
+            </div>
+            <button type="submit">Consultar</button>
+          </form>
+          <div class="row">
+            <form onSubmit="formList(event)">
+              <button type="submit">Listar pokemones</button>
+            </form>
+          </div>
+          <div class="row box" id="pokemonResults"></div>
+        </div>
+        <div class="three column"></div>
       </div>
-      <div class="row" id="pokemonResults"></div>
     </div>
 
     <!-- <input type="text" id="pokemonName"/>

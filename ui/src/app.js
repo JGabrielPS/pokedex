@@ -48,6 +48,7 @@ function displayInfo(pokemonInfo) {
   document.getElementById("pokemonResults").innerHTML += `
     <div class="card"> 
     <img src=${pokemonInfo.sprites.front_shiny} alt='${pokemonInfo.name}'>
+    <hr>
     <div class="row">
       <p>Nombre: ${pokemonInfo.name} shiny</p>
       <p>Tipos: ${pokemonInfo.types.map(e => e.type.name)}</p>
@@ -90,7 +91,11 @@ function savePokemonList(pokemon) {
 }
 
 function listPokemons() {
-  for (let i = 0; i < 10; i++) {
+  let limitList = 10;
+  if([...document.querySelectorAll(".card")] > 10){
+    limitList += 10;
+  }
+  for (let i = 0; i < limitList; i++) {
     if (i < pokemonList.length) {
       const pokemon = pokemonList[i].name;
       console.log(pokemon);
@@ -102,7 +107,7 @@ function listPokemons() {
           console.log(handleError(error, "pokemon", pokemon.name));
         });
     } else {
-      i = 10;
+      i = limitList;
     }
   }
 }
