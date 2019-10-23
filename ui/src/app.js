@@ -1,7 +1,9 @@
 const pokemonList = [];
+let limit = 0;
 
 function formData(event) {
   clearList(); //TODO eliminar el contenido de pokemonResults
+  limit = 0;
   event.preventDefault();
   const name = document.getElementById("pokemonName").value;
   //busca en la lista y realiza consultas a la poke API con el ID
@@ -18,9 +20,10 @@ function formData(event) {
 }
 
 function formList(event) {
-  clearList();
   event.preventDefault();
-  listPokemons();
+  clearList();
+  limit += 10;
+  listPokemons(limit);
 }
 
 function pokemonInfo(name) {
@@ -60,7 +63,7 @@ function displayInfo(pokemonInfo) {
 
 function displayError(error) {
   document.getElementById("pokemonResults").innerHTML = `
-    <p>${error}</p>
+    <p id="error-message">${error}</p>
   `;
 }
 
@@ -84,21 +87,15 @@ function savePokemonList(pokemon) {
       id: pokemon.order,
       name: pokemon.name
     });
-    console.log(pokemonList);
   } else {
     console.log("El pokemon ya esta en la lista");
   }
 }
 
-function listPokemons() {
-  let limitList = 10;
-  if([...document.querySelectorAll(".card")] > 10){
-    limitList += 10;
-  }
+function listPokemons(limitList) {
   for (let i = 0; i < limitList; i++) {
     if (i < pokemonList.length) {
       const pokemon = pokemonList[i].name;
-      console.log(pokemon);
       pokemonInfo(pokemon)
         .then(response => {
           displayInfo(response);
