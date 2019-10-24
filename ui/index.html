@@ -7,36 +7,31 @@
     <link rel="stylesheet" href="./styles/normalize.css" />
     <link rel="stylesheet" href="./styles/skeleton.css" />
     <link rel="stylesheet" href="./styles/style.css" />
-    <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css?family=Raleway&display=swap"
+      rel="stylesheet"
+    />
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <title>Pokedex</title>
   </head>
   <body>
     <div class="container">
       <div class="row">
-        <div class="six column"></div>
-        <div class="three column">
-          <form onSubmit="formData(event)">
-            <div class="row">
-              <label for="pokemonName">Ingrese el nombre del pokemon</label
-              ><input type="text" id="pokemonName" required="required" />
-            </div>
-            <button type="submit">Consultar</button>
-          </form>
-          <div class="row">
-            <form onSubmit="formList(event)">
-              <button type="submit">Listar pokemones</button>
-            </form>
-          </div>
-          <div class="row box" id="pokemonResults"></div>
+        <form onSubmit="formData(event)">
+          <label for="pokemonName">Ingrese el nombre del pokemon</label
+          ><input type="text" id="pokemonName" required="required" />
+
+          <button type="submit">Consultar</button>
+        </form>
+        <form onSubmit="formList(event)">
+          <button type="submit">Listar pokemones</button>
+        </form>
+        <div class="box" id="pokemonResults"></div>
+        <div class="saveFavouritesButton">
+          <button type="button" onClick="saveFavourites()">Guardar Pokemons Seleccionados</button>
         </div>
-        <div class="three column"></div>
       </div>
     </div>
-
-    <!-- <input type="text" id="pokemonName"/>
-    <button type="button" onClick="formData()">Choose pokemon</button>
-    <div id="pokemonResults"></div> -->
 
     <script src="./src/app.js"></script>
   </body>
