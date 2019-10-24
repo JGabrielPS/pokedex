@@ -1,5 +1,7 @@
 .card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  max-width: 164px;
+  min-height: 450px;
   transition: 0.3s;
   border-radius: 5px;
   text-align: center;
@@ -7,7 +9,7 @@
   padding-top: 20px;
   padding-left: 20px;
   padding-right: 20px;
-  flex: 1 0 15%;
+  flex-basis: 15%;
 }
 
 /* Add rounded corners to the top left and the top right corner of the image */
@@ -37,4 +39,9 @@ hr {
 
 #error-message{
   color:red;
+}
+
+.saveFavouritesButton{
+  padding-top: 5%;
+  padding-bottom: 5%;
 }
