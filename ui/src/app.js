@@ -11,6 +11,8 @@ const pokemonList = [
   { id: 236, name: "feraligatr" }
 ];
 
+const favouritesList = [];
+
 let limit = 0;
 
 function formData(event) {
@@ -24,7 +26,7 @@ function formData(event) {
       //muestra informacion en el DOM
       displayInfo(pokemonInfo);
       //guardo informacion del pokemon
-      savePokemonList(pokemonInfo);
+      savePokemonList(pokemonList, pokemonInfo.name, pokemonInfo.order);
     })
     .catch(error => {
       displayError(error);
@@ -36,6 +38,18 @@ function formList(event) {
   clearList();
   limit += 10;
   listPokemons(limit);
+}
+
+function saveFavourites() {
+  const checked = document.querySelectorAll(".check:checked");
+  [...checked].map(pokemon => {
+    savePokemonList(
+      favouritesList,
+      pokemon.dataset.pokemonname,
+      pokemon.dataset.pokemonid
+    );
+  });
+  console.log(favouritesList);
 }
 
 function pokemonInfo(name) {
@@ -69,6 +83,9 @@ function displayInfo(pokemonInfo) {
       <p>Tipos: ${pokemonInfo.types.map(e => e.type.name)}</p>
       <p>Peso: ${pokemonInfo.weight} lbs</p>
       <p>Habilidades: ${pokemonInfo.abilities.map(e => e.ability.name)}</p>
+      <input type="checkbox" class="check" data-pokemonId="${
+        pokemonInfo.order
+      }" data-pokemonName="${pokemonInfo.name}"/>
     </div>
     </div>`;
 }
@@ -93,11 +110,11 @@ function handleError(error, typeElement, item) {
   }
 }
 
-function savePokemonList(pokemon) {
-  if (pokemonList.every(e => e.name !== pokemon.name)) {
-    pokemonList.push({
-      id: pokemon.order,
-      name: pokemon.name
+function savePokemonList(list, name, id) {
+  if (list.every(e => e.name !== name)) {
+    list.push({
+      id: id,
+      name: name
     });
   } else {
     console.log("El pokemon ya esta en la lista");
