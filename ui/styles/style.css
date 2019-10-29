@@ -45,3 +45,7 @@ hr {
   padding-top: 5%;
   padding-bottom: 5%;
 }
+
+.seleccionado{
+  background-color: rgb(248, 93, 93);
+}

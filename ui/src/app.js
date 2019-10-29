@@ -40,8 +40,12 @@ function formList(event) {
   listPokemons(limit);
 }
 
+function agregarClase(div) {
+  div.classList.toggle("seleccionado");
+}
+
 function saveFavourites() {
-  const checked = document.querySelectorAll(".check:checked");
+  const checked = document.querySelectorAll(".seleccionado");
   [...checked].map(pokemon => {
     savePokemonList(
       favouritesList,
@@ -60,22 +64,24 @@ function pokemonInfo(name) {
   });
 }
 
-function getPokemonData(name) {
+function getPokemonData(param) {
   return new Promise((resolve, reject) => {
     axios
-      .get(`https://pokeapi.co/api/v2/pokemon/${name}`)
+      .get(`https://pokeapi.co/api/v2/pokemon/${param}`)
       .then(response => {
         resolve(response.data);
       })
       .catch(error => {
-        reject(handleError(error, "pokemon", name));
+        reject(handleError(error, "pokemon", param));
       });
   });
 }
 
 function displayInfo(pokemonInfo) {
   document.getElementById("pokemonResults").innerHTML += `
-    <div class="card"> 
+    <div class="card" data-pokemonId="${pokemonInfo.order}" data-pokemonName="${
+    pokemonInfo.name
+  }" onClick="agregarClase(this)"> 
     <img src=${pokemonInfo.sprites.front_shiny} alt='${pokemonInfo.name}'>
     <hr>
     <div class="row">
@@ -83,9 +89,6 @@ function displayInfo(pokemonInfo) {
       <p>Tipos: ${pokemonInfo.types.map(e => e.type.name)}</p>
       <p>Peso: ${pokemonInfo.weight} lbs</p>
       <p>Habilidades: ${pokemonInfo.abilities.map(e => e.ability.name)}</p>
-      <input type="checkbox" class="check" data-pokemonId="${
-        pokemonInfo.order
-      }" data-pokemonName="${pokemonInfo.name}"/>
     </div>
     </div>`;
 }
@@ -118,6 +121,25 @@ function savePokemonList(list, name, id) {
     });
   } else {
     console.log("El pokemon ya esta en la lista");
+  }
+}
+
+function list(limitList) {
+  let num = 0;
+  for (let i = 0; i < limitList; i++) {
+    if (pokemonList.length !== 0) {
+      const list = pokemonList.sort((a, b) => a.id - b.id);
+      list[i].id !== i ? (num = i) : (num = list[i].id);
+    } else {
+      num = i;
+    }
+    pokemonInfo(num)
+      .then(response => {
+        displayInfo(response);
+      })
+      .catch(error => {
+        console.log(handleError(error, "pokemon", pokemon.name));
+      });
   }
 }
 
