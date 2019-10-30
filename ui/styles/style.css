@@ -50,3 +50,16 @@ hr {
   background-color: rgb(248, 93, 93);
   box-shadow: none;
 }
+
+.sticky{
+  position: sticky;
+  top: 0;
+}
+
+.btnList{
+  background-color: white;
+}
+
+.btnSave{
+  background-color: rgb(248, 93, 93);
+}
