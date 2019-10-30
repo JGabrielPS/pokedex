@@ -62,4 +62,5 @@ hr {
 
 .btnSave{
   background-color: rgb(248, 93, 93);
+  visibility: hidden;
 }
