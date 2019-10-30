@@ -27,6 +27,7 @@ function formData(event) {
       displayInfo(pokemonInfo);
       //guardo informacion del pokemon
       savePokemonList(pokemonList, pokemonInfo.name, pokemonInfo.order);
+      showSaveButton();
     })
     .catch(error => {
       displayError(error);
@@ -44,6 +45,10 @@ function agregarClase(div) {
   div.classList.toggle("seleccionado");
 }
 
+function showSaveButton(){
+  document.getElementsByClassName('btnSave').style.visibility = "visible";
+}
+
 function saveFavourites() {
   const checked = document.querySelectorAll(".seleccionado");
   [...checked].map(pokemon => {
@@ -56,9 +61,9 @@ function saveFavourites() {
   console.log(favouritesList);
 }
 
-function pokemonInfo(name) {
+function pokemonInfo(param) {
   return new Promise((resolve, reject) => {
-    const response = getPokemonData(name);
+    const response = getPokemonData(param);
     if (typeof response === "object") resolve(response);
     else reject(response);
   });
@@ -79,7 +84,9 @@ function getPokemonData(param) {
 
 function displayInfo(pokemonInfo) {
   document.getElementById("pokemonResults").innerHTML += `
-    <div class="card ${favouritesList.find(e => e.id === pokemonInfo.order) ? "seleccionado" : ""}" data-pokemonId="${pokemonInfo.order}" data-pokemonName="${
+    <div class="card ${
+      favouritesList.find(e => e.id === pokemonInfo.order) ? "seleccionado" : ""
+    }" data-pokemonId="${pokemonInfo.order}" data-pokemonName="${
     pokemonInfo.name
   }" onClick="agregarClase(this)"> 
     <img src=${pokemonInfo.sprites.front_shiny} alt='${pokemonInfo.name}'>
@@ -88,7 +95,9 @@ function displayInfo(pokemonInfo) {
       <p><strong>Nombre:</strong> ${pokemonInfo.name} shiny</p>
       <p><strong>Tipos:</strong> ${pokemonInfo.types.map(e => e.type.name)}</p>
       <p><strong>Peso:</strong> ${pokemonInfo.weight} lbs</p>
-      <p><strong>Habilidades:</strong> ${pokemonInfo.abilities.map(e => e.ability.name)}</p>
+      <p><strong>Habilidades:</strong> ${pokemonInfo.abilities.map(
+        e => e.ability.name
+      )}</p>
     </div>
     </div>`;
 }
@@ -101,6 +110,7 @@ function displayError(error) {
 
 function clearList() {
   document.getElementById("pokemonResults").innerHTML = "";
+  document.getElementsByClassName('btnSave').style.visibility = "hidden";
 }
 
 function handleError(error, typeElement, item) {
@@ -133,6 +143,26 @@ function list(limitList) {
       .catch(error => {
         console.log(handleError(error, "pokemon", pokemon.name));
       });
+  }
+  showSaveButton();
+}
+
+function listFavourites() {
+  clearList();
+  if (favouritesList.length !== 0) {
+    for (let i = 1; i <= favouritesList.length; i++) {
+      pokemonInfo(favouritesList[i].id)
+        .then(response => {
+          displayInfo(response);
+        })
+        .catch(error => {
+          console.log(handleError(error, "pokemon", pokemon.name));
+        });
+    }
+    showSaveButton();
+  } else {
+    document.getElementById("pokemonResults").innerHTML +=
+      "La lista de favoritos esta vacia";
   }
 }
 
