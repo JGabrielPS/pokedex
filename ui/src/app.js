@@ -1,4 +1,4 @@
-const pokemonList = [
+const favouritesList = [
   { id: 94, name: "abra" },
   { id: 134, name: "gengar" },
   { id: 34, name: "pichu" },
@@ -11,7 +11,7 @@ const pokemonList = [
   { id: 236, name: "feraligatr" }
 ];
 
-const favouritesList = [];
+const pokemonList = [];
 
 let limit = 0;
 
@@ -37,7 +37,7 @@ function formList(event) {
   event.preventDefault();
   clearList();
   limit += 10;
-  listPokemons(limit);
+  list(limit);
 }
 
 function agregarClase(div) {
@@ -59,7 +59,7 @@ function saveFavourites() {
 function pokemonInfo(name) {
   return new Promise((resolve, reject) => {
     const response = getPokemonData(name);
-    if (typeof response !== "string") resolve(response);
+    if (typeof response === "object") resolve(response);
     else reject(response);
   });
 }
@@ -79,16 +79,16 @@ function getPokemonData(param) {
 
 function displayInfo(pokemonInfo) {
   document.getElementById("pokemonResults").innerHTML += `
-    <div class="card" data-pokemonId="${pokemonInfo.order}" data-pokemonName="${
+    <div class="card ${favouritesList.find(e => e.id === pokemonInfo.order) ? "seleccionado" : ""}" data-pokemonId="${pokemonInfo.order}" data-pokemonName="${
     pokemonInfo.name
   }" onClick="agregarClase(this)"> 
     <img src=${pokemonInfo.sprites.front_shiny} alt='${pokemonInfo.name}'>
     <hr>
     <div class="row">
-      <p>Nombre: ${pokemonInfo.name} shiny</p>
-      <p>Tipos: ${pokemonInfo.types.map(e => e.type.name)}</p>
-      <p>Peso: ${pokemonInfo.weight} lbs</p>
-      <p>Habilidades: ${pokemonInfo.abilities.map(e => e.ability.name)}</p>
+      <p><strong>Nombre:</strong> ${pokemonInfo.name} shiny</p>
+      <p><strong>Tipos:</strong> ${pokemonInfo.types.map(e => e.type.name)}</p>
+      <p><strong>Peso:</strong> ${pokemonInfo.weight} lbs</p>
+      <p><strong>Habilidades:</strong> ${pokemonInfo.abilities.map(e => e.ability.name)}</p>
     </div>
     </div>`;
 }
@@ -125,15 +125,8 @@ function savePokemonList(list, name, id) {
 }
 
 function list(limitList) {
-  let num = 0;
-  for (let i = 0; i < limitList; i++) {
-    if (pokemonList.length !== 0) {
-      const list = pokemonList.sort((a, b) => a.id - b.id);
-      list[i].id !== i ? (num = i) : (num = list[i].id);
-    } else {
-      num = i;
-    }
-    pokemonInfo(num)
+  for (let i = 1; i <= limitList; i++) {
+    pokemonInfo(i)
       .then(response => {
         displayInfo(response);
       })
