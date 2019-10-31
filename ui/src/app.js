@@ -55,7 +55,7 @@ function saveFavourites() {
     savePokemonList(
       favouritesList,
       pokemon.dataset.pokemonname,
-      pokemon.dataset.pokemonid
+      +pokemon.dataset.pokemonid
     );
   });
   console.log(favouritesList);
