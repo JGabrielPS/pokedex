@@ -1,7 +1,7 @@
 .card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  max-width: 164px;
-  min-height: 450px;
+  max-width: 170px;
+  min-height: 500px;
   transition: 0.3s;
   border-radius: 5px;
   text-align: center;
@@ -51,16 +51,26 @@ hr {
   box-shadow: none;
 }
 
-.sticky{
+.stickyTop{
   position: sticky;
   top: 0;
+}
+
+.stickyBottom{
+  position: sticky;
+  bottom: 0;
 }
 
 .btnList{
   background-color: white;
 }
 
+.btnListFavourites{
+  background-color: white;
+}
+
 .btnSave{
   background-color: rgb(248, 93, 93);
+  color: white;
   visibility: hidden;
 }
