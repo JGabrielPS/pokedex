@@ -46,7 +46,7 @@ function agregarClase(div) {
 }
 
 function showSaveButton(){
-  document.getElementsByClassName('btnSave').style.visibility = "visible";
+  document.querySelector('.btnSave').style.visibility = "visible";
 }
 
 function saveFavourites() {
@@ -110,7 +110,7 @@ function displayError(error) {
 
 function clearList() {
   document.getElementById("pokemonResults").innerHTML = "";
-  document.getElementsByClassName('btnSave').style.visibility = "hidden";
+  document.querySelector('.btnSave').style.visibility = "hidden";
 }
 
 function handleError(error, typeElement, item) {
@@ -150,8 +150,8 @@ function list(limitList) {
 function listFavourites() {
   clearList();
   if (favouritesList.length !== 0) {
-    for (let i = 1; i <= favouritesList.length; i++) {
-      pokemonInfo(favouritesList[i].id)
+    for (let i = 0; i < favouritesList.length; i++) {
+      pokemonInfo(favouritesList[i].name)
         .then(response => {
           displayInfo(response);
         })
@@ -159,7 +159,6 @@ function listFavourites() {
           console.log(handleError(error, "pokemon", pokemon.name));
         });
     }
-    showSaveButton();
   } else {
     document.getElementById("pokemonResults").innerHTML +=
       "La lista de favoritos esta vacia";
