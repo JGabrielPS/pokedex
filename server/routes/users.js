@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-const bodyParser = require('body-parser');
-
 const mysqlConnection = require('../dbConnection');
 let query = "";
+
+const bodyParser = require('body-parser');
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
