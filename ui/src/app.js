@@ -45,8 +45,12 @@ function agregarClase(div) {
   div.classList.toggle("seleccionado");
 }
 
-function showSaveButton(){
-  document.querySelector('.btnSave').style.visibility = "visible";
+function showSaveButton() {
+  document.querySelector(".btnSave").style.visibility = "visible";
+}
+
+function loadImg(img, element) {
+  element.src = img;
 }
 
 function saveFavourites() {
@@ -89,7 +93,9 @@ function displayInfo(pokemonInfo) {
     }" data-pokemonId="${pokemonInfo.order}" data-pokemonName="${
     pokemonInfo.name
   }" onClick="agregarClase(this)"> 
-    <img src=${pokemonInfo.sprites.front_shiny} alt='${pokemonInfo.name}'>
+    <img src='./rsc/load.gif' onload='loadImg("${
+      pokemonInfo.sprites.front_shiny
+    }", this)' alt='${pokemonInfo.name}'>
     <hr>
     <div class="row">
       <p><strong>Nombre:</strong> ${pokemonInfo.name} shiny</p>
@@ -110,7 +116,7 @@ function displayError(error) {
 
 function clearList() {
   document.getElementById("pokemonResults").innerHTML = "";
-  document.querySelector('.btnSave').style.visibility = "hidden";
+  document.querySelector(".btnSave").style.visibility = "hidden";
 }
 
 function handleError(error, typeElement, item) {
