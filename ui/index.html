@@ -17,18 +17,50 @@
   <body>
     <div class="container">
       <div class="row">
-        <form onSubmit="formData(event)">
-          <label for="pokemonName">Ingrese el nombre del pokemon</label
-          ><input type="text" id="pokemonName" required="required" />
+        <div class="eight columns">
+          <div class="container stickyTop">
+            <div class="row">
+              <div class="six columns">
+                <div class="formList" style="margin-top: 11px">
+                  <form onSubmit="formList(event)">
+                    <button type="submit" class="btnList">
+                      Listar pokemones
+                    </button>
+                  </form>
+                </div>
+              </div>
+              <div class="six columns">
+                <div class="listFavouritesButton" style="margin-top: 11px">
+                  <button
+                    type="button"
+                    onClick="listFavourites()"
+                    class="btnListFavourites"
+                  >
+                    Listar Favoritos
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
 
-          <button type="submit">Consultar</button>
-        </form>
-        <form onSubmit="formList(event)">
-          <button type="submit">Listar pokemones</button>
-        </form>
-        <div class="box" id="pokemonResults"></div>
-        <div class="saveFavouritesButton">
-          <button type="button" onClick="saveFavourites()">Guardar Pokemons Seleccionados</button>
+        </div>
+
+        <div class="four columns stickyTop">
+          <div>
+            <form onSubmit="formData(event)">
+              <label for="pokemonName">Ingrese el nombre del pokemon</label
+              ><input type="text" id="pokemonName" required="required" />
+              <div>
+                  <button type="submit">Consultar</button>
+              </div>
+            </form>
+          </div>
+          <div class="box" id="pokemonResults"></div>
+          <div>
+            <button type="button" class="btnSave" onClick="saveFavourites()">
+              Guardar Pokemones
+            </button>
+          </div>
         </div>
       </div>
     </div>
