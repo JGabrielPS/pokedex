@@ -41,11 +41,6 @@ hr {
   color:red;
 }
 
-.saveFavouritesButton{
-  padding-top: 5%;
-  padding-bottom: 5%;
-}
-
 .seleccionado{
   background-color: rgb(248, 93, 93);
   box-shadow: none;
@@ -56,8 +51,13 @@ hr {
   top: 0;
 }
 
-.stickyBottom{
-  position: sticky;
+.fixedTop{
+  position: fixed;
+  top: 0;
+}
+
+.fixedBottom{
+  position: fixed;
   bottom: 0;
 }
 

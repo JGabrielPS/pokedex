@@ -17,15 +17,6 @@
   <body>
     <div class="container">
       <div class="row">
-        <div class="four columns stickyTop">
-          <form onSubmit="formData(event)">
-            <label for="pokemonName">Ingrese el nombre del pokemon</label
-            ><input type="text" id="pokemonName" required="required" />
-
-            <button type="submit">Consultar</button>
-          </form>
-        </div>
-
         <div class="eight columns">
           <div class="container stickyTop">
             <div class="row">
@@ -52,23 +43,23 @@
             </div>
           </div>
 
-          <div class="box" id="pokemonResults"></div>
+        </div>
 
-          <div class="container stickyBottom">
-            <div class="row">
-              <div class="six columns">
-                <div class="saveFavouritesButton">
-                  <button
-                    type="button"
-                    class="btnSave"
-                    onClick="saveFavourites()"
-                  >
-                    Guardar Pokemones
-                  </button>
-                </div>
+        <div class="four columns stickyTop">
+          <div>
+            <form onSubmit="formData(event)">
+              <label for="pokemonName">Ingrese el nombre del pokemon</label
+              ><input type="text" id="pokemonName" required="required" />
+              <div>
+                  <button type="submit">Consultar</button>
               </div>
-              <div class="six columns"></div>
-            </div>
+            </form>
+          </div>
+          <div class="box" id="pokemonResults"></div>
+          <div>
+            <button type="button" class="btnSave" onClick="saveFavourites()">
+              Guardar Pokemones
+            </button>
           </div>
         </div>
       </div>
