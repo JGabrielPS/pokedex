@@ -24,7 +24,7 @@ function formData(event) {
   pokemonInfo(name)
     .then(pokemonInfo => {
       //muestra informacion en el DOM
-      displayInfo(pokemonInfo);
+      displayInfo(pokemonInfo, "pokemonSearchResult");
       //guardo informacion del pokemon
       savePokemonList(pokemonList, pokemonInfo.name, pokemonInfo.order);
       showSaveButton();
@@ -86,8 +86,8 @@ function getPokemonData(param) {
   });
 }
 
-function displayInfo(pokemonInfo) {
-  document.getElementById("pokemonResults").innerHTML += `
+function displayInfo(pokemonInfo, element) {
+  document.getElementById(element).innerHTML += `
     <div class="card ${
       favouritesList.find(e => e.id === pokemonInfo.order) ? "seleccionado" : ""
     }" data-pokemonId="${pokemonInfo.order}" data-pokemonName="${
@@ -144,7 +144,7 @@ function list(limitList) {
   for (let i = 1; i <= limitList; i++) {
     pokemonInfo(i)
       .then(response => {
-        displayInfo(response);
+        displayInfo(response, "pokemonResults");
       })
       .catch(error => {
         console.log(handleError(error, "pokemon", pokemon.name));
@@ -159,7 +159,7 @@ function listFavourites() {
     for (let i = 0; i < favouritesList.length; i++) {
       pokemonInfo(favouritesList[i].name)
         .then(response => {
-          displayInfo(response);
+          displayInfo(response, "pokemonResults");
         })
         .catch(error => {
           console.log(handleError(error, "pokemon", pokemon.name));
@@ -171,19 +171,19 @@ function listFavourites() {
   }
 }
 
-function listPokemons(limitList) {
-  for (let i = 0; i < limitList; i++) {
-    if (i < pokemonList.length) {
-      const pokemon = pokemonList[i].name;
-      pokemonInfo(pokemon)
-        .then(response => {
-          displayInfo(response);
-        })
-        .catch(error => {
-          console.log(handleError(error, "pokemon", pokemon.name));
-        });
-    } else {
-      i = limitList;
-    }
-  }
-}
+// function listPokemons(limitList) {
+//   for (let i = 0; i < limitList; i++) {
+//     if (i < pokemonList.length) {
+//       const pokemon = pokemonList[i].name;
+//       pokemonInfo(pokemon)
+//         .then(response => {
+//           displayInfo(response, "pokemonResults");
+//         })
+//         .catch(error => {
+//           console.log(handleError(error, "pokemon", pokemon.name));
+//         });
+//     } else {
+//       i = limitList;
+//     }
+//   }
+// }
