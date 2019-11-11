@@ -19,6 +19,24 @@ img {
   margin-right: auto;
 }
 
+nav {
+  background-color: #e74c3c;
+}
+
+.nav-bar{
+  display: inline;
+}
+
+#nav-btns{
+  float: right;
+}
+
+.nav-btn{
+  background-color: white;
+  margin: 24px 10px 24px 10px;
+  font-size: 10px;
+}
+
 .box {
   display: flex;
   flex-wrap: wrap;

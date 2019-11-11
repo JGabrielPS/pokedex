@@ -15,31 +15,38 @@
     <title>Pokedex</title>
   </head>
   <body>
+    <nav>
+      <img class="nav-bar" src="./rsc/pokedexLogo.png" alt="" />
+      <div class="nav-bar" id="nav-btns">
+        <button class="nav-btn" type="button">Iniciar Sesión</button>
+        <button class="nav-btn" type="button">Registrar Usuario</button>
+      </div>
+    </nav>
     <div class="container">
       <div class="row">
         <div class="eight columns">
-          <div class="container stickyTop">
+          <div class="container stickyTop nav-opt">
             <div class="row">
-              <div class="six columns">
-                <div class="formList" style="margin-top: 11px">
-                  <form onSubmit="formList(event)">
-                    <button type="submit" class="btnList">
-                      Listar pokemones
+                <div class="six columns">
+                  <div class="formList" style="margin-top: 11px">
+                    <form onSubmit="formList(event)">
+                      <button type="submit" class="btnList">
+                        Listar pokemones
+                      </button>
+                    </form>
+                  </div>
+                </div>
+                <div class="six columns">
+                  <div class="listFavouritesButton" style="margin-top: 11px">
+                    <button
+                      type="button"
+                      onClick="listFavourites()"
+                      class="btnListFavourites"
+                    >
+                      Listar Favoritos
                     </button>
-                  </form>
+                  </div>
                 </div>
-              </div>
-              <div class="six columns">
-                <div class="listFavouritesButton" style="margin-top: 11px">
-                  <button
-                    type="button"
-                    onClick="listFavourites()"
-                    class="btnListFavourites"
-                  >
-                    Listar Favoritos
-                  </button>
-                </div>
-              </div>
             </div>
           </div>
           <div class="box" id="pokemonResults"></div>
@@ -51,7 +58,7 @@
               <label for="pokemonName">Ingrese el nombre del pokemon</label
               ><input type="text" id="pokemonName" required="required" />
               <div>
-                  <button type="submit">Consultar</button>
+                <button type="submit">Consultar</button>
               </div>
             </form>
           </div>
