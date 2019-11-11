@@ -15,44 +15,30 @@
     <title>Pokedex</title>
   </head>
   <body>
-    <nav>
-      <img class="nav-bar" src="./rsc/pokedexLogo.png" alt="" />
+    <nav class="stickyTop">
+      
+      <img class="nav-bar" src="./rsc/pokedexLogo.png" alt=""/>
+
       <div class="nav-bar" id="nav-btns">
+        <button class="nav-btn" type="button" onClick="listPokemons()">
+          Listar Pokemones
+        </button>
+        <button type="button" onClick="listFavourites()" class="nav-btn" style="margin-right: 30em;">
+          Listar Favoritos
+        </button>
         <button class="nav-btn" type="button">Iniciar Sesión</button>
         <button class="nav-btn" type="button">Registrar Usuario</button>
       </div>
+
     </nav>
+
     <div class="container">
       <div class="row">
         <div class="eight columns">
-          <div class="container stickyTop nav-opt">
-            <div class="row">
-                <div class="six columns">
-                  <div class="formList" style="margin-top: 11px">
-                    <form onSubmit="formList(event)">
-                      <button type="submit" class="btnList">
-                        Listar pokemones
-                      </button>
-                    </form>
-                  </div>
-                </div>
-                <div class="six columns">
-                  <div class="listFavouritesButton" style="margin-top: 11px">
-                    <button
-                      type="button"
-                      onClick="listFavourites()"
-                      class="btnListFavourites"
-                    >
-                      Listar Favoritos
-                    </button>
-                  </div>
-                </div>
-            </div>
-          </div>
           <div class="box" id="pokemonResults"></div>
         </div>
 
-        <div class="four columns stickyTop">
+        <div class="four columns sticky-search">
           <div>
             <form onSubmit="formData(event)">
               <label for="pokemonName">Ingrese el nombre del pokemon</label

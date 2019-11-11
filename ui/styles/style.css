@@ -20,7 +20,7 @@ img {
 }
 
 nav {
-  background-color: #e74c3c;
+  background-color: #f52913;
 }
 
 .nav-bar{
@@ -69,6 +69,11 @@ hr {
   top: 0;
 }
 
+.sticky-search{
+  position: sticky;
+  top: 85px;
+}
+
 .fixedTop{
   position: fixed;
   top: 0;
@@ -77,14 +82,6 @@ hr {
 .fixedBottom{
   position: fixed;
   bottom: 0;
-}
-
-.btnList{
-  background-color: white;
-}
-
-.btnListFavourites{
-  background-color: white;
 }
 
 .btnSave{

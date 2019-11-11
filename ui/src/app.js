@@ -34,8 +34,7 @@ function formData(event) {
     });
 }
 
-function formList(event) {
-  event.preventDefault();
+function listPokemons() {
   clearList();
   limit += 10;
   list(limit);
