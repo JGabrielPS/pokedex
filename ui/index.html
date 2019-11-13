@@ -15,21 +15,24 @@
     <title>Pokedex</title>
   </head>
   <body>
-    <nav class="stickyTop">
-      
-      <img class="nav-bar" src="./rsc/pokedexLogo.png" alt=""/>
+    <nav>
+      <img class="nav-bar" src="./rsc/pokedexLogo.png" alt="" />
 
       <div class="nav-bar" id="nav-btns">
         <button class="nav-btn" type="button" onClick="listPokemons()">
           Listar Pokemones
         </button>
-        <button type="button" onClick="listFavourites()" class="nav-btn" style="margin-right: 30em;">
+        <button
+          type="button"
+          onClick="listFavourites()"
+          class="nav-btn"
+          style="margin-right: 30em;"
+        >
           Listar Favoritos
         </button>
         <button class="nav-btn" type="button">Iniciar Sesión</button>
         <button class="nav-btn" type="button">Registrar Usuario</button>
       </div>
-
     </nav>
 
     <div class="container">
@@ -50,8 +53,29 @@
           </div>
           <div class="box" id="pokemonSearchResult"></div>
           <div>
-            <button type="button" class="btnSave" onClick="saveFavourites()">
-              Guardar Pokemones
+            <button
+              type="button"
+              class="btnSave"
+              id="savePokemon"
+              onClick="savePokemon()"
+            >
+              Guardar Pokemon Seleccionado
+            </button>
+            <button
+              type="button"
+              class="btnSave"
+              id="saveFavourites"
+              onClick="saveFavourites()"
+            >
+              Guardar Pokemones Seleccionados
+            </button>
+            <button
+              type="button"
+              class="btnSave"
+              id="saveChanges"
+              onClick="saveChanges()"
+            >
+              Guardar Cambios
             </button>
           </div>
         </div>

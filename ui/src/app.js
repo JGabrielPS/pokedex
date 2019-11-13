@@ -1,4 +1,4 @@
-const favouritesList = [
+let favouritesList = [
   { id: 94, name: "abra" },
   { id: 134, name: "gengar" },
   { id: 34, name: "pichu" },
@@ -25,9 +25,7 @@ function formData(event) {
     .then(pokemonInfo => {
       //muestra informacion en el DOM
       displayInfo(pokemonInfo, "pokemonSearchResult");
-      //guardo informacion del pokemon
-      savePokemonList(pokemonList, pokemonInfo.name, pokemonInfo.order);
-      showSaveButton();
+      showSaveButton("savePokemon");
     })
     .catch(error => {
       displayError(error);
@@ -44,16 +42,25 @@ function agregarClase(div) {
   div.classList.toggle("seleccionado");
 }
 
-function showSaveButton() {
-  document.querySelector(".btnSave").style.visibility = "visible";
+function showSaveButton(button) {
+  document.querySelector(`#${button}`).style.visibility = "visible";
 }
 
 function loadImg(img, element) {
   element.src = img;
 }
 
+function savePokemon() {
+  const savedPokemon = document.querySelector(".seleccionado");
+  savePokemonList(
+    favouritesList,
+    savedPokemon.dataset.pokemonname,
+    +savedPokemon.dataset.pokemonid
+  );
+}
+
 function saveFavourites() {
-  const checked = document.querySelectorAll(".seleccionado");
+  const checked = document.querySelectorAll(".seleccionado.noListado");
   [...checked].map(pokemon => {
     savePokemonList(
       favouritesList,
@@ -62,6 +69,19 @@ function saveFavourites() {
     );
   });
   console.log(favouritesList);
+}
+
+function saveChanges() {
+  favouritesList = [];
+  const checked = document.querySelectorAll(".seleccionado");
+  [...checked].map(pokemon => {
+    savePokemonList(
+      favouritesList,
+      pokemon.dataset.pokemonname,
+      +pokemon.dataset.pokemonid
+    );
+  });
+  listFavourites();
 }
 
 function pokemonInfo(param) {
@@ -88,7 +108,7 @@ function getPokemonData(param) {
 function displayInfo(pokemonInfo, element) {
   document.getElementById(element).innerHTML += `
     <div class="card ${
-      favouritesList.find(e => e.id === pokemonInfo.order) ? "seleccionado" : ""
+      favouritesList.find(e => e.id === pokemonInfo.order) ? "seleccionado" : "noListado"
     }" data-pokemonId="${pokemonInfo.order}" data-pokemonName="${
     pokemonInfo.name
   }" onClick="agregarClase(this)"> 
@@ -115,7 +135,10 @@ function displayError(error) {
 
 function clearList() {
   document.getElementById("pokemonResults").innerHTML = "";
-  document.querySelector(".btnSave").style.visibility = "hidden";
+  document.getElementById("pokemonSearchResult").innerHTML = "";
+  document.querySelector("#savePokemon").style.visibility = "hidden";
+  document.querySelector("#saveFavourites").style.visibility = "hidden";
+  document.querySelector("#saveChanges").style.visibility = "hidden";
 }
 
 function handleError(error, typeElement, item) {
@@ -129,13 +152,14 @@ function handleError(error, typeElement, item) {
 }
 
 function savePokemonList(list, name, id) {
-  if (list.every(e => e.name !== name)) {
+  if (list.filter(e => e.name === name).length < 2) {
     list.push({
       id: id,
       name: name
     });
+    console.log(`${name} fue agragado a los favoritos`);
   } else {
-    console.log("El pokemon ya esta en la lista");
+    alert("El pokemon ya esta en la lista dos veces");
   }
 }
 
@@ -149,11 +173,12 @@ function list(limitList) {
         console.log(handleError(error, "pokemon", pokemon.name));
       });
   }
-  showSaveButton();
+  showSaveButton("saveFavourites");
 }
 
 function listFavourites() {
   clearList();
+  showSaveButton("saveChanges");
   if (favouritesList.length !== 0) {
     for (let i = 0; i < favouritesList.length; i++) {
       pokemonInfo(favouritesList[i].name)
