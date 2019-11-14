@@ -128,10 +128,10 @@ function getPokemons() {
   });
 }
 
-function displayInfo(pokemonInfo, element) {
+function displayInfo(pokemonInfo, element, cond) {
   document.getElementById(element).innerHTML += `
     <div class="card ${
-      favouritesList.find(e => e.id === pokemonInfo.order)
+      cond
         ? "seleccionado"
         : "noListado"
     }" data-pokemonId="${pokemonInfo.order}" data-pokemonName="${
@@ -212,7 +212,7 @@ function listFavourites() {
         for (let i = 0; i < favouritesList.length; i++) {
           pokemonInfo(favouritesList[i].pokemon_nombre)
             .then(response => {
-              displayInfo(response, "pokemonResults");
+              displayInfo(response, "pokemonResults", 1);
             })
             .catch(error => {
               console.log(handleError(error, "pokemon", favouritesList[i].pokemon_nombre));
