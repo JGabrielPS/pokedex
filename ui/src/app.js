@@ -12,6 +12,14 @@
 // ];
 
 let favouritesList = [];
+getPokemonsList()
+  .then(pokemonList => {
+    favouritesList = pokemonList;
+    console.log(favouritesList)
+  })
+  .catch(error => {
+    displayError(error);
+  });
 
 const pokemonList = [];
 
@@ -107,7 +115,7 @@ function getPokemonData(param) {
   });
 }
 
-function getPokemonsList(list) {
+function getPokemonsList() {
   return new Promise((resolve, reject) => {
     const response = getPokemons();
     if (typeof response === "object") resolve(response);
@@ -130,13 +138,9 @@ function getPokemons() {
 
 function displayInfo(pokemonInfo, element, cond) {
   document.getElementById(element).innerHTML += `
-    <div class="card ${
-      cond
-        ? "seleccionado"
-        : "noListado"
-    }" data-pokemonId="${pokemonInfo.order}" data-pokemonName="${
-    pokemonInfo.name
-  }" onClick="agregarClase(this)"> 
+    <div class="card ${cond ? "seleccionado" : "noListado"}" data-pokemonId="${
+    pokemonInfo.order
+  }" data-pokemonName="${pokemonInfo.name}" onClick="agregarClase(this)"> 
     <img src='./rsc/load.gif' onload='loadImg("${
       pokemonInfo.sprites.front_shiny
     }", this)' alt='${pokemonInfo.name}'>
@@ -204,28 +208,22 @@ function list(limitList) {
 function listFavourites() {
   clearList();
   showSaveButton("saveChanges");
-  getPokemonsList()
-    .then(pokemonsList => {
-      favouritesList = pokemonsList;
-      console.log(favouritesList);
-      if (favouritesList.length !== 0) {
-        for (let i = 0; i < favouritesList.length; i++) {
-          pokemonInfo(favouritesList[i].pokemon_nombre)
-            .then(response => {
-              displayInfo(response, "pokemonResults", 1);
-            })
-            .catch(error => {
-              console.log(handleError(error, "pokemon", favouritesList[i].pokemon_nombre));
-            });
-        }
-      } else {
-        document.getElementById("pokemonResults").innerHTML +=
-          "La lista de favoritos esta vacia";
-      }
-    })
-    .catch(error => {
-      displayError(error);
-    });
+  if (favouritesList.length !== 0) {
+    for (let i = 0; i < favouritesList.length; i++) {
+      pokemonInfo(favouritesList[i].pokemon_name)
+        .then(response => {
+          displayInfo(response, "pokemonResults", 1);
+        })
+        .catch(error => {
+          console.log(
+            handleError(error, "pokemon", favouritesList[i].pokemon_name)
+          );
+        });
+    }
+  } else {
+    document.getElementById("pokemonResults").innerHTML +=
+      "La lista de favoritos esta vacia";
+  }
 }
 
 // function listPokemons(limitList) {
