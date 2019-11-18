@@ -15,7 +15,7 @@ let favouritesList = [];
 getPokemonsList()
   .then(pokemonList => {
     favouritesList = pokemonList;
-    console.log(favouritesList)
+    console.log(favouritesList);
   })
   .catch(error => {
     displayError(error);
@@ -60,13 +60,15 @@ function loadImg(img, element) {
   element.src = img;
 }
 
-function savePokemon() {
+function saveSelectedPokemon() {
   const savedPokemon = document.querySelector(".seleccionado");
-  savePokemonList(
-    favouritesList,
-    savedPokemon.dataset.pokemonname,
-    +savedPokemon.dataset.pokemonid
-  );
+  savePokemon(savedPokemon.dataset.pokemonname, +savedPokemon.dataset.pokemonid)
+    .then(response => {
+      alert(response);
+    })
+    .catch(response => {
+      alert(response);
+    });
 }
 
 function saveFavourites() {
@@ -131,7 +133,7 @@ function getPokemons() {
         resolve(response.data);
       })
       .catch(error => {
-        reject("No se pudo conectar con la db.Error: ", error);
+        reject("No se pudo conectar con la db.Error: " + error);
       });
   });
 }
@@ -182,14 +184,45 @@ function handleError(error, typeElement, item) {
 
 function savePokemonList(list, name, id) {
   if (list.filter(e => e.name === name).length < 2) {
-    list.push({
-      id: id,
-      name: name
+    savePokemon(id, name).then(mensaje => {
+      console.log(mensaje);
+      list
+        .push({
+          id: id,
+          name: name
+        })
+        .catch(error => {
+          alert(error);
+        });
     });
-    console.log(`${name} fue agragado a los favoritos`);
   } else {
     alert("El pokemon ya esta en la lista dos veces");
   }
+}
+
+function savePokemon(name, id) {
+  return new Promise((resolve, reject) => {
+    const response = savePokemonData(name, id);
+    console.log(response)
+    if (response === "Pokemon Guardado con Exito") resolve(response);
+    else reject(response);
+  });
+}
+
+function savePokemonData(name, id) {
+  return new Promise((resolve, reject) => {
+    axios
+    .post("http://localhost:3000/saveFavouritePokemon", {
+      id: id,
+      name: `${name}`
+    })
+    .then(response => {
+      resolve(response.data);
+    })
+    .catch(error => {
+      reject("No se pudo guardar el error. Mensaje: " + error);
+    });
+  });
 }
 
 function list(limitList) {
