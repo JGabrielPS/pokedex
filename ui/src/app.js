@@ -1,16 +1,3 @@
-// let favouritesList = [
-//   { id: 94, name: "abra" },
-//   { id: 134, name: "gengar" },
-//   { id: 34, name: "pichu" },
-//   { id: 43, name: "raichu" },
-//   { id: 316, name: "entei" },
-//   { id: 227, name: "mew" },
-//   { id: 7, name: "charizard" },
-//   { id: 12, name: "blastoise" },
-//   { id: 180, name: "scizor" },
-//   { id: 236, name: "feraligatr" }
-// ];
-
 let favouritesList = [];
 getPokemonsList()
   .then(pokemonList => {
@@ -27,7 +14,6 @@ let limit = 0;
 
 function formData(event) {
   clearList(); //TODO eliminar el contenido de pokemonResults
-  limit = 0;
   event.preventDefault();
   const name = document.getElementById("pokemonName").value;
   //busca en la lista y realiza consultas a la poke API con el ID
@@ -64,10 +50,10 @@ function saveSelectedPokemon() {
   const savedPokemon = document.querySelector(".seleccionado");
   savePokemon(savedPokemon.dataset.pokemonname, +savedPokemon.dataset.pokemonid)
     .then(response => {
-      alert(response);
+      console.log(response)
     })
-    .catch(response => {
-      alert(response);
+    .catch(error => {
+      alert(error);
     });
 }
 
@@ -138,6 +124,49 @@ function getPokemons() {
   });
 }
 
+function savePokemonList(list, name, id) {
+  if (list.filter(e => e.name === name).length < 2) {
+    savePokemon(id, name)
+      .then(mensaje => {
+        console.log(mensaje);
+        list.push({
+          id: id,
+          name: name
+        });
+      })
+      .catch(error => {
+        alert(error);
+      });
+  } else {
+    alert("El pokemon ya esta en la lista dos veces");
+  }
+}
+
+function savePokemon(name, id) {
+  return new Promise((resolve, reject) => {
+    const response = savePokemonData(name, id);
+    if (response === 200) resolve("El Pokemon Se Guardo con Exito");
+    else reject(response);
+  });
+}
+
+function savePokemonData(name, id) {
+  return new Promise((resolve, reject) => {
+    axios
+      .post("http://localhost:3000/saveFavouritePokemon", {
+        id: id,
+        name: `${name}`
+      })
+      .then(response => {
+        console.log(response)
+        resolve(response.status);
+      })
+      .catch(error => {
+        reject("No se pudo guardar el error. Mensaje: " + error);
+      });
+  });
+}
+
 function displayInfo(pokemonInfo, element, cond) {
   document.getElementById(element).innerHTML += `
     <div class="card ${cond ? "seleccionado" : "noListado"}" data-pokemonId="${
@@ -180,49 +209,6 @@ function handleError(error, typeElement, item) {
     default:
       return "Error no especificado";
   }
-}
-
-function savePokemonList(list, name, id) {
-  if (list.filter(e => e.name === name).length < 2) {
-    savePokemon(id, name).then(mensaje => {
-      console.log(mensaje);
-      list
-        .push({
-          id: id,
-          name: name
-        })
-        .catch(error => {
-          alert(error);
-        });
-    });
-  } else {
-    alert("El pokemon ya esta en la lista dos veces");
-  }
-}
-
-function savePokemon(name, id) {
-  return new Promise((resolve, reject) => {
-    const response = savePokemonData(name, id);
-    console.log(response)
-    if (response === "Pokemon Guardado con Exito") resolve(response);
-    else reject(response);
-  });
-}
-
-function savePokemonData(name, id) {
-  return new Promise((resolve, reject) => {
-    axios
-    .post("http://localhost:3000/saveFavouritePokemon", {
-      id: id,
-      name: `${name}`
-    })
-    .then(response => {
-      resolve(response.data);
-    })
-    .catch(error => {
-      reject("No se pudo guardar el error. Mensaje: " + error);
-    });
-  });
 }
 
 function list(limitList) {
