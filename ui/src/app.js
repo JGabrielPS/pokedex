@@ -50,7 +50,7 @@ function saveSelectedPokemon() {
   const savedPokemon = document.querySelector(".seleccionado");
   savePokemon(savedPokemon.dataset.pokemonname, +savedPokemon.dataset.pokemonid)
     .then(response => {
-      console.log(response)
+      console.log(response);
     })
     .catch(error => {
       alert(error);
@@ -158,7 +158,7 @@ function savePokemonData(name, id) {
         name: `${name}`
       })
       .then(response => {
-        console.log(response)
+        console.log(response);
         resolve(response.status);
       })
       .catch(error => {
@@ -167,11 +167,13 @@ function savePokemonData(name, id) {
   });
 }
 
-function displayInfo(pokemonInfo, element, cond) {
+function displayInfo(pokemonInfo, element, condition) {
   document.getElementById(element).innerHTML += `
-    <div class="card ${cond ? "seleccionado" : "noListado"}" data-pokemonId="${
-    pokemonInfo.order
-  }" data-pokemonName="${pokemonInfo.name}" onClick="agregarClase(this)"> 
+    <div class="card ${
+      condition === "selected" ? "seleccionado" : "noListado"
+    }" data-pokemonId="${pokemonInfo.order}" data-pokemonName="${
+    pokemonInfo.name
+  }" onClick="agregarClase(this)"> 
     <img src='./rsc/load.gif' onload='loadImg("${
       pokemonInfo.sprites.front_shiny
     }", this)' alt='${pokemonInfo.name}'>
@@ -215,7 +217,15 @@ function list(limitList) {
   for (let i = 1; i <= limitList; i++) {
     pokemonInfo(i)
       .then(response => {
-        displayInfo(response, "pokemonResults");
+        displayInfo(
+          response,
+          "pokemonResults",
+          `${
+            favouritesList.find(e => e.pokemon_id === response.order)
+              ? "selected"
+              : ""
+          }`
+        );
       })
       .catch(error => {
         console.log(handleError(error, "pokemon", pokemon.name));
@@ -231,7 +241,7 @@ function listFavourites() {
     for (let i = 0; i < favouritesList.length; i++) {
       pokemonInfo(favouritesList[i].pokemon_name)
         .then(response => {
-          displayInfo(response, "pokemonResults", 1);
+          displayInfo(response, "pokemonResults", "selected");
         })
         .catch(error => {
           console.log(
