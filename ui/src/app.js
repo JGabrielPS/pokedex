@@ -48,13 +48,11 @@ function loadImg(img, element) {
 
 function saveSelectedPokemon() {
   const savedPokemon = document.querySelector(".seleccionado");
-  savePokemon(savedPokemon.dataset.pokemonname, +savedPokemon.dataset.pokemonid)
-    .then(response => {
-      console.log(response);
-    })
-    .catch(error => {
-      alert(error);
-    });
+  savePokemonList(
+    favouritesList,
+    savedPokemon.dataset.pokemonname,
+    +savedPokemon.dataset.pokemonid
+  );
 }
 
 function saveFavourites() {
@@ -71,7 +69,9 @@ function saveFavourites() {
 
 function saveChanges() {
   favouritesList = [];
+  deletePokemons();
   const checked = document.querySelectorAll(".seleccionado");
+  //listFavouritesAgain([...checked], listFavourites());
   [...checked].map(pokemon => {
     savePokemonList(
       favouritesList,
@@ -79,7 +79,18 @@ function saveChanges() {
       +pokemon.dataset.pokemonid
     );
   });
-  listFavourites();
+  //listFavourites();
+}
+
+function listFavouritesAgain(pokemons, callback) {
+  pokemons.map(pokemon => {
+    savePokemonList(
+      favouritesList,
+      pokemon.dataset.pokemonname,
+      +pokemon.dataset.pokemonid
+    );
+  });
+  callback();
 }
 
 function pokemonInfo(param) {
@@ -125,13 +136,13 @@ function getPokemons() {
 }
 
 function savePokemonList(list, name, id) {
-  if (list.filter(e => e.name === name).length < 2) {
-    savePokemon(id, name)
+  if (list.filter(e => e.pokemon_name === name).length < 2) {
+    savePokemon(name, id)
       .then(mensaje => {
         console.log(mensaje);
         list.push({
-          id: id,
-          name: name
+          pokemon_order: id,
+          pokemon_name: name
         });
       })
       .catch(error => {
@@ -145,7 +156,7 @@ function savePokemonList(list, name, id) {
 function savePokemon(name, id) {
   return new Promise((resolve, reject) => {
     const response = savePokemonData(name, id);
-    if (response === 200) resolve("El Pokemon Se Guardo con Exito");
+    if (typeof response === "object") resolve(response.data);
     else reject(response);
   });
 }
@@ -159,10 +170,31 @@ function savePokemonData(name, id) {
       })
       .then(response => {
         console.log(response);
-        resolve(response.status);
+        resolve(response);
       })
       .catch(error => {
         reject("No se pudo guardar el error. Mensaje: " + error);
+      });
+  });
+}
+
+function deletePokemons() {
+  return new Promise((resolve, reject) => {
+    const response = deletePokemonList();
+    if (typeof response === "object") resolve(response.data);
+    else reject(response);
+  });
+}
+
+function deletePokemonList() {
+  return new Promise((resolve, reject) => {
+    axios
+      .delete("http://localhost:3000/deletePokemonsList")
+      .then(response => {
+        resolve(response);
+      })
+      .catch(error => {
+        reject(error);
       });
   });
 }
@@ -221,7 +253,7 @@ function list(limitList) {
           response,
           "pokemonResults",
           `${
-            favouritesList.find(e => e.pokemon_id === response.order)
+            favouritesList.find(e => e.pokemon_order === response.order)
               ? "selected"
               : ""
           }`
@@ -254,20 +286,3 @@ function listFavourites() {
       "La lista de favoritos esta vacia";
   }
 }
-
-// function listPokemons(limitList) {
-//   for (let i = 0; i < limitList; i++) {
-//     if (i < pokemonList.length) {
-//       const pokemon = pokemonList[i].name;
-//       pokemonInfo(pokemon)
-//         .then(response => {
-//           displayInfo(response, "pokemonResults");
-//         })
-//         .catch(error => {
-//           console.log(handleError(error, "pokemon", pokemon.name));
-//         });
-//     } else {
-//       i = limitList;
-//     }
-//   }
-// }
