@@ -19,14 +19,12 @@ app.use((req, res, next) => {
   next();
 }) 
 
+const morgan = require('morgan');
 
+app.use(morgan('dev'));
 
 app.use(require('./routes/users'));
 
 app.listen(app.get('port'), () => {
   console.log(`Listening on ${app.get('port')}`);
 });
-
-const morgan = require('morgan');
-
-app.use(morgan('dev'));

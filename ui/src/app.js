@@ -69,22 +69,48 @@ function saveFavourites() {
 }
 
 function saveChanges() {
-  favouritesList = [];
-  deletePokemons().then(response => {
-    console.log(response);
+  const checked = document.querySelectorAll(".card");
+  const eliminados = [...checked].filter(
+    e => e.getAttribute("class") === "card"
+  );
+  console.log(eliminados[0].dataset.pokemonid);
+  eliminados.map(pokemon =>
+    deletePokemon(pokemon.dataset.pokemonid)
+      .then(response => {
+        console.log(response);
+      })
+      .catch(error => {
+        alert(error);
+      })
+  );
+  eliminados.forEach(eliminado => {
+    favouritesList = favouritesList.filter(e => e.pokemon_order !== eliminado.dataset.pokemonid);
   })
-  .catch(error => {
-    displayError(error);
-  });
-  const checked = document.querySelectorAll(".seleccionado");
-  //listFavouritesAgain([...checked], listFavourites());
-  [...checked].map(pokemon => {
-    savePokemonList(
-      favouritesList,
-      pokemon.dataset.pokemonname,
-      +pokemon.dataset.pokemonid
-    );
-  });
+  console.log(favouritesList)
+  listFavourites();
+  // for (let i = 0; i < [...checked].length; i++) {
+  //   console.log([...checked][i].dataset.pokemonname);
+  //   if(favouritesList.indexOf([...checked][i].dataset.pokemonname) !== -1) repetidos.push(favouritesList.indexOf([...checked][i].dataset.pokemonname));
+  // }
+  //const repetidos = favouritesList.find(e => e.pokemon_order === [...checked].map(e => e.dataset.pokemonid));
+  //console.log(repetidos)
+  // favouritesList = [];
+  // deletePokemons()
+  //   .then(response => {
+  //     console.log(response);
+  //   })
+  //   .catch(error => {
+  //     displayError(error);
+  //   });
+  // const checked = document.querySelectorAll(".seleccionado");
+  // //listFavouritesAgain([...checked], listFavourites());
+  // [...checked].map(pokemon => {
+  //   savePokemonList(
+  //     favouritesList,
+  //     pokemon.dataset.pokemonname,
+  //     +pokemon.dataset.pokemonid
+  //   );
+  // });
   //listFavourites();
 }
 
@@ -153,7 +179,7 @@ function savePokemonList(list, name, id, message) {
   if (list.filter(e => e.pokemon_name === name).length < 2) {
     savePokemon(name, id)
       .then(mensaje => {
-        if(message === "alert") alert(`${mensaje}: ${name}`);
+        if (message === "alert") alert(`${mensaje}: ${name}`);
         else console.log(`${mensaje}: ${name}`);
         list.push({
           pokemon_order: id,
@@ -198,12 +224,13 @@ function savePokemonData(name, id) {
 
 function deletePokemons() {
   return new Promise((resolve, reject) => {
-    deletePokemonList().then(response => {
-      resolve(response);
-    })
-    .catch(error => {
-      reject(error);
-    });
+    deletePokemonList()
+      .then(response => {
+        resolve(response);
+      })
+      .catch(error => {
+        reject(error);
+      });
   });
 }
 
@@ -211,6 +238,36 @@ function deletePokemonList() {
   return new Promise((resolve, reject) => {
     axios
       .delete("http://localhost:3000/deletePokemonsList")
+      .then(response => {
+        resolve(response);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+}
+
+function deletePokemon(id) {
+  return new Promise((resolve, reject) => {
+    deletePokemonData(id)
+      .then(response => {
+        resolve(response);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+}
+
+function deletePokemonData(id) {
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "delete",
+      url: "http://localhost:3000/deletePokemon",
+      data: {
+        id: `${id}`
+      }
+    })
       .then(response => {
         resolve(response);
       })

@@ -31,6 +31,15 @@ router.post("/saveFavouritePokemon", (req, res) => {
   }
 });
 
+router.delete("/deletePokemon", (req, res) =>{
+  const id = req.body.id;
+  query = `DELETE FROM pokemon WHERE pokemon_order=${id}`;
+  connection.query(query, (err) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).send("El pokemon se elimino exitosamente");
+  });
+});
+
 router.delete("/deletePokemonsList", (req, res) =>{
   query = `DELETE FROM pokemon`;
   connection.query(query, (err) => {
