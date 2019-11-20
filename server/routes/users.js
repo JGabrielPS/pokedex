@@ -7,10 +7,6 @@ const bodyParser = require("body-parser");
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 
-router.get("/", (req, res) => {
-  res.json({ message: "welcome" });
-});
-
 let query = "";
 
 router.get("/listPokemons", (req, res) => {
@@ -28,7 +24,7 @@ router.post("/saveFavouritePokemon", (req, res) => {
     query = `INSERT INTO pokemon(pokemon_order, pokemon_name) VALUES (${id}, '${name}')`;
     connection.query(query, (err, rows) => {
       if (err) return res.status(500).json(err);
-      return res.status(200).send("Pokemon Guardado con Exito");
+      return res.status(200).send("Se Guardo con Exito el Pokemon");
     });
   } else {
     res.status(400).send("Objeto vacio");
