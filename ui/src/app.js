@@ -62,7 +62,8 @@ function saveFavourites() {
     savePokemonList(
       favouritesList,
       pokemon.dataset.pokemonname,
-      +pokemon.dataset.pokemonid
+      +pokemon.dataset.pokemonid,
+      "list"
     );
   });
   console.log(favouritesList);
@@ -156,8 +157,21 @@ function savePokemonList(list, name, id, message) {
   if (list.filter(e => e.pokemon_name === name).length < 2) {
     savePokemon(name, id)
       .then(mensaje => {
-        if (message === "alert") alert(`${mensaje}: ${name}`);
-        else console.log(`${mensaje}: ${name}`);
+        switch(message){
+          case "one":
+            alert(`${mensaje}: ${name}`);
+            break;
+            
+          case "list":
+            alert(`Los pokemons seleccionados fueron guardados con exito`);
+            break;
+
+            default:
+              console.log(`${mensaje}: ${name}`);
+              break;
+        }
+        // if (message === "alert") alert(`${mensaje}: ${name}`);
+        // else console.log(`${mensaje}: ${name}`);
         list.push({
           pokemon_order: id,
           pokemon_name: name
