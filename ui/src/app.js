@@ -84,34 +84,11 @@ function saveChanges() {
       })
   );
   eliminados.forEach(eliminado => {
-    favouritesList = favouritesList.filter(e => e.pokemon_order !== eliminado.dataset.pokemonid);
-  })
-  console.log(favouritesList)
+    favouritesList = favouritesList.filter(
+      e => e.pokemon_order !== +eliminado.dataset.pokemonid
+    );
+  });
   listFavourites();
-  // for (let i = 0; i < [...checked].length; i++) {
-  //   console.log([...checked][i].dataset.pokemonname);
-  //   if(favouritesList.indexOf([...checked][i].dataset.pokemonname) !== -1) repetidos.push(favouritesList.indexOf([...checked][i].dataset.pokemonname));
-  // }
-  //const repetidos = favouritesList.find(e => e.pokemon_order === [...checked].map(e => e.dataset.pokemonid));
-  //console.log(repetidos)
-  // favouritesList = [];
-  // deletePokemons()
-  //   .then(response => {
-  //     console.log(response);
-  //   })
-  //   .catch(error => {
-  //     displayError(error);
-  //   });
-  // const checked = document.querySelectorAll(".seleccionado");
-  // //listFavouritesAgain([...checked], listFavourites());
-  // [...checked].map(pokemon => {
-  //   savePokemonList(
-  //     favouritesList,
-  //     pokemon.dataset.pokemonname,
-  //     +pokemon.dataset.pokemonid
-  //   );
-  // });
-  //listFavourites();
 }
 
 function listFavouritesAgain(pokemons, callback) {
