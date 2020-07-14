@@ -143,12 +143,12 @@ function getPokemonsList() {
 function getPokemons() {
   return new Promise((resolve, reject) => {
     axios
-      .get("http://localhost:3000/listPokemons")
+      .get("http://localhost:3000/user/listPokemons")
       .then(response => {
         resolve(response.data);
       })
       .catch(error => {
-        reject("No se pudo conectar con la db.Error: " + error);
+        reject("No se pudo conectar con la db. " + error);
       });
   });
 }
@@ -200,7 +200,7 @@ function savePokemon(name, id) {
 function savePokemonData(name, id) {
   return new Promise((resolve, reject) => {
     axios
-      .post("http://localhost:3000/saveFavouritePokemon", {
+      .post("http://localhost:3000/user/saveFavouritePokemon", {
         id: id,
         name: `${name}`
       })
@@ -228,7 +228,7 @@ function deletePokemons() {
 function deletePokemonList() {
   return new Promise((resolve, reject) => {
     axios
-      .delete("http://localhost:3000/deletePokemonsList")
+      .delete("http://localhost:3000/user/deletePokemonsList")
       .then(response => {
         resolve(response);
       })
@@ -254,7 +254,7 @@ function deletePokemonData(id) {
   return new Promise((resolve, reject) => {
     axios({
       method: "delete",
-      url: "http://localhost:3000/deletePokemon",
+      url: "http://localhost:3000/user/deletePokemon",
       data: {
         id: `${id}`
       }
