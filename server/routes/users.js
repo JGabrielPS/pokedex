@@ -7,16 +7,28 @@ const bodyParser = require("body-parser");
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 const path = require("path");
+const bcrypt = require("bcrypt");
 
 let query = "";
 
 router
   .post("/register", (req, res) => {
     const { username, password } = req.body;
-    // query = `INSERT INTO users(username, password) VALUES (${username}, ${password})`;
-    res.send(
-      `Los datos enviados son: usuario= ${username}, contraseña= ${password}`
-    );
+
+    bcrypt.hash(password, 10, (err, hash) => {
+      query = `INSERT INTO users(username, password) VALUES ("${username}", "${hash}")`;
+      connection.query(query, (err, result, rows) => {
+        if (err) return res.status(500).json(err);
+        res.send({
+          message: "Table Data",
+          Total_record: result.length,
+          result,
+        });
+      });
+    });
+    // res.send(
+    //   `Los datos enviados son: usuario= ${username}, contraseña= ${password}`
+    // );
   })
   .get("/listPokemons", (req, res) => {
     query = "SELECT * FROM pokemon ORDER BY pokemon_order";

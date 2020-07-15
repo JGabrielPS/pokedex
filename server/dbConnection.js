@@ -3,7 +3,7 @@ const mysql = require("mysql");
 const createUsers = `CREATE TABLE IF NOT EXISTS users(
   userId INT(255) PRIMARY KEY AUTO_INCREMENT,
   username VARCHAR(50) NOT NULL UNIQUE,
-  password VARCHAR(50) NOT NULL UNIQUE
+  password VARCHAR(100) NOT NULL UNIQUE
 )`;
 
 const connection = mysql.createConnection({
