@@ -5,6 +5,7 @@ const app = express();
 //se declaran las variables que tendran los objetos para manejar las rutas
 const index = require("./routes/index");
 const user = require("./routes/users");
+const auth = require("./routes/auth");
 
 //el process.env.PORT lo da la aplicacion, es decir, setea el puerto
 app.set("port", process.env.PORT || 3000);
@@ -31,6 +32,7 @@ app.use(morgan("dev"));
 
 app.use("/", index);
 app.use("/user", user);
+app.use("/auth", auth);
 
 //express le dice al SO que escuche el puerto especificado y que si hay un evento http, lo informa
 app.listen(app.get("port"), (error) => {
