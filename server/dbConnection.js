@@ -23,8 +23,11 @@ connection.connect((error) => {
 });
 
 connection.query(createUsers, (error) => {
-  if(error) console.log('No se pudo crear la tabla users, ' + error);
-  console.log('La tabla users esta creada');
+  if (error) {
+    console.log("No se pudo crear la tabla users, " + error);
+  } else {
+    console.log("La tabla users esta creada");
+  }
 });
 
 module.exports = connection;

@@ -1,18 +1,18 @@
 const express = require("express");
 const router = express.Router();
 
-const connection = require("../dbConnection");
-
 const bodyParser = require("body-parser");
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
-const path = require("path");
 const bcrypt = require("bcrypt");
 
+const redirectAuthenticated = require("../middleware/redirectAuthenticated");
+
+const connection = require("../dbConnection");
 let query = "";
 
 router
-  .post("/register", (req, res) => {
+  .post("/register", redirectAuthenticated, (req, res) => {
     const { username, password } = req.body;
 
     bcrypt.hash(password, 10, (err, hash) => {
@@ -21,22 +21,28 @@ router
         if (err) {
           const errMsg = Object.values(err)[2];
           return res.redirect("/auth/register");
+        } else {
+          res.redirect("/");
         }
-        res.redirect("/");
       });
     });
   })
-  .post("/login", (req, res) => {
+  .post("/login", redirectAuthenticated, (req, res) => {
     const { username, password } = req.body;
-    const query = `SELECT username, password FROM users WHERE username = "${username}"`;
+    const query = `SELECT userId, username, password FROM users WHERE username = "${username}"`;
     connection.query(query, (err, rows) => {
       if (err) {
         return res.redirect("/auth/login");
       } else {
         const hash = JSON.parse(JSON.stringify(rows))[0].password;
+        const userId = JSON.parse(JSON.stringify(rows))[0].userId;
         bcrypt.compare(password, hash, (error, same) => {
-          if (same) return res.redirect("/");
-          res.redirect("/auth/login");
+          if (same) {
+            req.session.userId = userId;
+            return res.redirect("/");
+          } else {
+            res.redirect("/auth/login");
+          }
         });
       }
     });

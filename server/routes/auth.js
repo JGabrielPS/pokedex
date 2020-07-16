@@ -1,15 +1,18 @@
 const express = require("express");
 const router = express.Router();
+const redirectAuthenticated = require("../middleware/redirectAuthenticated");
 
 router
-  .get("/register", (req, res) => {
+  .get("/register", redirectAuthenticated, (req, res) => {
     res.render("register");
   })
-  .get("/login", (req, res) => {
+  .get("/login", redirectAuthenticated, (req, res) => {
     res.render("login");
   })
   .get("/logout", (req, res) => {
-    res.send("Prueba de ruta de logout: OK");
+    req.session.destroy(() => {
+      res.redirect("/");
+    });
   });
 
 module.exports = router;
