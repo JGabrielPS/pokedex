@@ -1,27 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/styles/normalize.css" />
-    <link rel="stylesheet" href="/styles/skeleton.css" />
-    <title>Pagina de Login Pokedex</title>
-  </head>
+  <%- include("layouts/header.ejs"); -%>
+
   <body>
     <div class="container">
-      <div class="row">
-        <div class="twelve columns">
-          <nav>
-            <img class="nav-bar" src="../rsc/pokedexLogo.png" alt="" />
-            <div class="nav-bar" id="nav-btns">
-              <a href="/auth/register">Registrarse</a>
-              <a href="/auth/login">Iniciar Sesión</a>
-              <a href="/auth/logout">Cerrar Sesión</a>
-            </div>
-          </nav>
-        </div>
-      </div>
-
+      <%- include("layouts/navbar.ejs"); -%>
       <div class="row">
         <div class="eight columns"></div>
         <div class="four columns">

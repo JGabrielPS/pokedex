@@ -1,44 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="stylesheet" href="/styles/normalize.css" />
-    <link rel="stylesheet" href="/styles/skeleton.css" />
-    <link rel="stylesheet" href="/styles/style.css" />
-    <link
-      href="https://fonts.googleapis.com/css?family=Raleway&display=swap"
-      rel="stylesheet"
-    />
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <title>Pokedex</title>
-  </head>
+  <%- include("layouts/header.ejs"); -%>
+
   <body>
-    <nav>
-      <img class="nav-bar" src="./rsc/pokedexLogo.png" alt="" />
-
-      <div class="nav-bar" id="nav-btns">
-        <button class="nav-btn" type="button" onClick="listPokemons()">
-          Listar Pokemones
-        </button>
-        <button
-          type="button"
-          onClick="listFavourites()"
-          class="nav-btn"
-          style="margin-right: 30em;"
-        >
-          Listar Favoritos
-        </button>
-        <a href="/auth/register">Registrarse</a>
-        <a href="/auth/login">Iniciar Sesión</a>
-        <a href="/auth/logout">Cerrar Sesión</a>
-        <!-- <button class="nav-btn" type="button">Iniciar Sesión</button>
-        <button class="nav-btn" type="button">Registrar Usuario</button> -->
-      </div>
-    </nav>
-
     <div class="container">
+      <%- include("layouts/navbar.ejs"); -%>
       <div class="row">
         <div class="eight columns">
           <div class="box" id="pokemonResults"></div>

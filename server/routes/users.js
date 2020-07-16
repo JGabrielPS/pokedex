@@ -34,11 +34,11 @@ router
       if (err) {
         return res.redirect("/auth/login");
       } else {
+        const user = JSON.parse(JSON.stringify(rows))[0].username;
         const hash = JSON.parse(JSON.stringify(rows))[0].password;
-        const userId = JSON.parse(JSON.stringify(rows))[0].userId;
         bcrypt.compare(password, hash, (error, same) => {
           if (same) {
-            req.session.userId = userId;
+            req.session.userName = user;
             return res.redirect("/");
           } else {
             res.redirect("/auth/login");

@@ -1,0 +1,31 @@
+<div class="row">
+  <div class="twelve columns">
+    <nav>
+      <a href="/"><img class="nav-bar" src="/rsc/pokedexLogo.png" alt="" /></a>
+
+      <div class="nav-bar" id="nav-btns">
+        <% if(locals.index && index){ %>
+        <button class="nav-btn" type="button" onClick="listPokemons()">
+          Listar Pokemones
+        </button>
+        <button
+          type="button"
+          onClick="listFavourites()"
+          class="nav-btn"
+          style="margin-right: 30em;"
+        >
+          Listar Favoritos
+        </button>
+        <% } %> 
+        <% if(!userSession){ %>
+        <a href="/auth/register">Registrarse</a>
+        <a href="/auth/login">Iniciar Sesión</a>
+        <% } %> 
+        <% if(userSession){ %>
+        <p><strong><%= userSession %></strong></p>
+        <a href="/auth/logout">Cerrar Sesión</a>
+        <% } %>
+      </div>
+    </nav>
+  </div>
+</div>

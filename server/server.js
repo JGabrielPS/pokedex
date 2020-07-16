@@ -47,7 +47,15 @@ app.use((req, res, next) => {
 const morgan = require("morgan");
 app.use(morgan("dev"));
 
+//objeto global de node donde creamos la key userSession para 
+//conocer nombre de usuario y si la sesion esta activa
+global.userSession = null;
+
 //rutas usadas en el proyecto
+app.use("*", (req, res, next) => {
+  userSession = req.session.userName;
+  next();
+});
 app.use("/", index);
 app.use("/user", user);
 app.use("/auth", auth);
