@@ -12,6 +12,9 @@ app.set("port", process.env.PORT || 3000);
 
 app.use(express.static("ui"));
 
+const ejs = require("ejs");
+app.set("view engine", "ejs");
+
 app.use((req, res, next) => {
   res.header(
     "Access-Control-Allow-Origin",

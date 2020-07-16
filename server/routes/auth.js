@@ -1,13 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const path = require("path");
 
 router
   .get("/register", (req, res) => {
-    res.sendFile(path.join(__dirname, "../../ui/views/register.html"));
+    res.render("register");
   })
   .get("/login", (req, res) => {
-    res.send("Prueba de ruta de login: OK");
+    res.render("login");
   })
   .get("/logout", (req, res) => {
     res.send("Prueba de ruta de logout: OK");

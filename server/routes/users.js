@@ -18,17 +18,28 @@ router
     bcrypt.hash(password, 10, (err, hash) => {
       query = `INSERT INTO users(username, password) VALUES ("${username}", "${hash}")`;
       connection.query(query, (err, result, rows) => {
-        if (err) return res.status(500).json(err);
-        res.send({
-          message: "Table Data",
-          Total_record: result.length,
-          result,
-        });
+        if (err) {
+          const errMsg = Object.values(err)[2];
+          return res.redirect("/auth/register");
+        }
+        res.redirect("/");
       });
     });
-    // res.send(
-    //   `Los datos enviados son: usuario= ${username}, contraseña= ${password}`
-    // );
+  })
+  .post("/login", (req, res) => {
+    const { username, password } = req.body;
+    const query = `SELECT username, password FROM users WHERE username = "${username}"`;
+    connection.query(query, (err, rows) => {
+      if (err) {
+        return res.redirect("/auth/login");
+      } else {
+        const hash = JSON.parse(JSON.stringify(rows))[0].password;
+        bcrypt.compare(password, hash, (error, same) => {
+          if (same) return res.redirect("/");
+          res.redirect("/auth/login");
+        });
+      }
+    });
   })
   .get("/listPokemons", (req, res) => {
     query = "SELECT * FROM pokemon ORDER BY pokemon_order";
