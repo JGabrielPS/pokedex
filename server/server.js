@@ -47,7 +47,7 @@ app.use((req, res, next) => {
 const morgan = require("morgan");
 app.use(morgan("dev"));
 
-//objeto global de node donde creamos la key userSession para 
+//objeto global de node donde creamos la key userSession para
 //conocer nombre de usuario y si la sesion esta activa
 global.userSession = null;
 
@@ -60,7 +60,9 @@ app.use("/", index);
 app.use("/user", user);
 app.use("/auth", auth);
 //ruta para el caso de acceder a un recurso inexistente
-app.use((req, res) => res.status(404).send("Not Found"));
+app.use((req, res) =>
+  res.status(404).render("notFound", { pageTitle: "404-Not Found" })
+);
 
 //express le dice al SO que escuche el puerto especificado y que si hay un evento http, lo informa
 app.listen(app.get("port"), (error) => {

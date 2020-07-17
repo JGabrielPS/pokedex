@@ -12,10 +12,16 @@
             <div>
               <label for="">Usuario</label
               ><input type="text" name="username" id="username" />
+              <% if(locals.param === "username"){ %>  
+              <p><%= locals.msg %></p>
+              <% } %>
             </div>
             <div>
               <label for="">Contraseña</label
               ><input type="password" name="password" id="password" />
+              <% if(locals.param === "password"){ %>  
+              <p><%= locals.msg %></p>
+              <% } %>
             </div>
             <button class="button-primary" type="submit">Registrarse</button>
           </form>

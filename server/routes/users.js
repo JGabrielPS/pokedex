@@ -7,46 +7,63 @@ router.use(bodyParser.urlencoded({ extended: false }));
 const bcrypt = require("bcrypt");
 
 const redirectAuthenticated = require("../middleware/redirectAuthenticated");
+const {
+  registerValidationRules,
+  loginValidationRules,
+  validate,
+} = require("../middleware/validateInputs");
 
 const connection = require("../dbConnection");
 let query = "";
 
 router
-  .post("/register", redirectAuthenticated, (req, res) => {
-    const { username, password } = req.body;
+  .post(
+    "/register",
+    redirectAuthenticated,
+    registerValidationRules(),
+    validate,
+    (req, res) => {
+      const { username, password } = req.body;
 
-    bcrypt.hash(password, 10, (err, hash) => {
-      query = `INSERT INTO users(username, password) VALUES ("${username}", "${hash}")`;
-      connection.query(query, (err, result, rows) => {
-        if (err) {
-          const errMsg = Object.values(err)[2];
-          return res.redirect("/auth/register");
-        } else {
-          res.redirect("/");
-        }
-      });
-    });
-  })
-  .post("/login", redirectAuthenticated, (req, res) => {
-    const { username, password } = req.body;
-    const query = `SELECT userId, username, password FROM users WHERE username = "${username}"`;
-    connection.query(query, (err, rows) => {
-      if (err) {
-        return res.redirect("/auth/login");
-      } else {
-        const user = JSON.parse(JSON.stringify(rows))[0].username;
-        const hash = JSON.parse(JSON.stringify(rows))[0].password;
-        bcrypt.compare(password, hash, (error, same) => {
-          if (same) {
-            req.session.userName = user;
-            return res.redirect("/");
+      bcrypt.hash(password, 10, (err, hash) => {
+        query = `INSERT INTO users(username, password) VALUES ("${username}", "${hash}")`;
+        connection.query(query, (err, result, rows) => {
+          if (err) {
+            const errMsg = Object.values(err)[2];
+            return res.redirect("/auth/register");
           } else {
-            res.redirect("/auth/login");
+            res.redirect("/");
           }
         });
-      }
-    });
-  })
+      });
+    }
+  )
+  .post(
+    "/login",
+    redirectAuthenticated,
+    loginValidationRules(),
+    validate,
+    (req, res) => {
+      const { username, password } = req.body;
+      const query = `SELECT userId, username, password FROM users WHERE username = "${username}"`;
+      connection.query(query, (err, rows) => {
+        if (err) {
+          return res.redirect("/auth/login");
+        } else {
+          const user = JSON.parse(JSON.stringify(rows))[0].username;
+          const hash = JSON.parse(JSON.stringify(rows))[0].password;
+          bcrypt.compare(password, hash, (error, same) => {
+            if (same) {
+              req.session.userName = user;
+              return res.redirect("/");
+            } else {
+              res.redirect("/auth/login");
+            }
+          });
+        }
+      });
+    }
+  )
   .get("/listPokemons", (req, res) => {
     query = "SELECT * FROM pokemon ORDER BY pokemon_order";
     connection.query(query, (err, rows) => {
