@@ -1,4 +1,4 @@
-favouritesList = [];
+let favouritesList = [];
 // getPokemonsList()
 //   .then(pokemonList => {
 //     favouritesList = pokemonList;
@@ -18,12 +18,12 @@ function formData(event) {
   const name = document.getElementById("pokemonName").value;
   //busca en la lista y realiza consultas a la poke API con el ID
   pokemonInfo(name)
-    .then(pokemonInfo => {
+    .then((pokemonInfo) => {
       //muestra informacion en el DOM
       displayInfo(pokemonInfo, "pokemonSearchResult");
       showSaveButton("savePokemon");
     })
-    .catch(error => {
+    .catch((error) => {
       displayError(error);
     });
 }
@@ -50,20 +50,25 @@ function saveSelectedPokemon(user) {
   const savedPokemon = document.querySelector(".seleccionado");
   savePokemonList(
     favouritesList,
-    savedPokemon.dataset.pokemonname,
-    +savedPokemon.dataset.pokemonid,
-    "alert"
+    (params = {
+      user,
+      pokemonid: `${+savedPokemon.dataset.pokemonid}`,
+      pokemonname: `${savedPokemon.dataset.pokemonname}`,
+      one: true,
+    })
   );
 }
 
-function saveFavourites() {
+function saveFavourites(user) {
   const checked = document.querySelectorAll(".seleccionado.noListado");
-  [...checked].map(pokemon => {
+  [...checked].map((pokemon) => {
     savePokemonList(
       favouritesList,
-      pokemon.dataset.pokemonname,
-      +pokemon.dataset.pokemonid,
-      "list"
+      (params = {
+        user,
+        pokemonid: `${+pokemon.dataset.pokemonid}`,
+        pokemonname: `${pokemon.dataset.pokemonname}`,
+      })
     );
   });
   console.log(favouritesList);
@@ -72,28 +77,28 @@ function saveFavourites() {
 function saveChanges() {
   const checked = document.querySelectorAll(".card");
   const eliminados = [...checked].filter(
-    e => e.getAttribute("class") === "card"
+    (e) => e.getAttribute("class") === "card"
   );
   console.log(eliminados[0].dataset.pokemonid);
-  eliminados.map(pokemon =>
+  eliminados.map((pokemon) =>
     deletePokemon(pokemon.dataset.pokemonid)
-      .then(response => {
+      .then((response) => {
         console.log(response);
       })
-      .catch(error => {
+      .catch((error) => {
         alert(error);
       })
   );
-  eliminados.forEach(eliminado => {
+  eliminados.forEach((eliminado) => {
     favouritesList = favouritesList.filter(
-      e => e.pokemon_order !== +eliminado.dataset.pokemonid
+      (e) => e.pokemon_order !== +eliminado.dataset.pokemonid
     );
   });
   listFavourites();
 }
 
 function listFavouritesAgain(pokemons, callback) {
-  pokemons.map(pokemon => {
+  pokemons.map((pokemon) => {
     savePokemonList(
       favouritesList,
       pokemon.dataset.pokemonname,
@@ -106,10 +111,10 @@ function listFavouritesAgain(pokemons, callback) {
 function pokemonInfo(param) {
   return new Promise((resolve, reject) => {
     getPokemonData(param)
-      .then(response => {
+      .then((response) => {
         resolve(response);
       })
-      .catch(error => {
+      .catch((error) => {
         reject(error);
       });
   });
@@ -119,10 +124,10 @@ function getPokemonData(param) {
   return new Promise((resolve, reject) => {
     axios
       .get(`https://pokeapi.co/api/v2/pokemon/${param}`)
-      .then(response => {
+      .then((response) => {
         resolve(response.data);
       })
-      .catch(error => {
+      .catch((error) => {
         reject(handleError(error, "pokemon", param));
       });
   });
@@ -131,10 +136,10 @@ function getPokemonData(param) {
 function getPokemonsList() {
   return new Promise((resolve, reject) => {
     getPokemons()
-      .then(response => {
+      .then((response) => {
         resolve(response);
       })
-      .catch(error => {
+      .catch((error) => {
         reject(error);
       });
   });
@@ -144,40 +149,27 @@ function getPokemons() {
   return new Promise((resolve, reject) => {
     axios
       .get("http://localhost:3000/collection/listPokemons")
-      .then(response => {
+      .then((response) => {
         resolve(response.data);
       })
-      .catch(error => {
+      .catch((error) => {
         reject("No se pudo conectar con la db. " + error);
       });
   });
 }
 
-function savePokemonList(list, name, id, message) {
-  if (list.filter(e => e.pokemon_name === name).length < 2) {
-    savePokemon(name, id)
-      .then(mensaje => {
-        switch(message){
-          case "one":
-            alert(`${mensaje}: ${name}`);
-            break;
-            
-          case "list":
-            alert(`Los pokemons seleccionados fueron guardados con exito`);
-            break;
-
-            default:
-              console.log(`${mensaje}: ${name}`);
-              break;
-        }
-        // if (message === "alert") alert(`${mensaje}: ${name}`);
-        // else console.log(`${mensaje}: ${name}`);
+function savePokemonList(list, params) {
+  if (list.filter((e) => e.pokemon_name === name).length < 2) {
+    savePokemon(params.user, params.pokemonid, params.pokemonname)
+      .then((response) => {
+        if(params.one) alert(`${response}: ${params.pokemonname}`);
+        else console.log(`${response}: ${params.pokemonname}`);
         list.push({
-          pokemon_order: id,
-          pokemon_name: name
+          pokemon_order: params.pokemonid,
+          pokemon_name: params.pokemonname,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         alert(error);
       });
   } else {
@@ -185,29 +177,30 @@ function savePokemonList(list, name, id, message) {
   }
 }
 
-function savePokemon(name, id) {
+function savePokemon(user, pokemonid, pokemonname) {
   return new Promise((resolve, reject) => {
-    savePokemonData(name, id)
-      .then(response => {
+    savePokemonData(user, pokemonid, pokemonname)
+      .then((response) => {
         resolve(response);
       })
-      .catch(error => {
+      .catch((error) => {
         reject(error);
       });
   });
 }
 
-function savePokemonData(name, id) {
+function savePokemonData(user, pokemonid, pokemonname) {
   return new Promise((resolve, reject) => {
     axios
       .post("http://localhost:3000/collection/savePokemon", {
-        id: id,
-        name: `${name}`
+        user: `${user}`,
+        order: `${pokemonid}`,
+        name: `${pokemonname}`,
       })
-      .then(response => {
+      .then((response) => {
         resolve(response.data);
       })
-      .catch(error => {
+      .catch((error) => {
         reject("No se pudo guardar el error. Mensaje: " + error);
       });
   });
@@ -216,10 +209,10 @@ function savePokemonData(name, id) {
 function deletePokemons() {
   return new Promise((resolve, reject) => {
     deletePokemonList()
-      .then(response => {
+      .then((response) => {
         resolve(response);
       })
-      .catch(error => {
+      .catch((error) => {
         reject(error);
       });
   });
@@ -229,10 +222,10 @@ function deletePokemonList() {
   return new Promise((resolve, reject) => {
     axios
       .delete("http://localhost:3000/collection/deletePokemonsList")
-      .then(response => {
+      .then((response) => {
         resolve(response);
       })
-      .catch(error => {
+      .catch((error) => {
         reject(error);
       });
   });
@@ -241,10 +234,10 @@ function deletePokemonList() {
 function deletePokemon(id) {
   return new Promise((resolve, reject) => {
     deletePokemonData(id)
-      .then(response => {
+      .then((response) => {
         resolve(response);
       })
-      .catch(error => {
+      .catch((error) => {
         reject(error);
       });
   });
@@ -256,13 +249,13 @@ function deletePokemonData(id) {
       method: "delete",
       url: "http://localhost:3000/collection/deletePokemon",
       data: {
-        id: `${id}`
-      }
+        id: `${id}`,
+      },
     })
-      .then(response => {
+      .then((response) => {
         resolve(response);
       })
-      .catch(error => {
+      .catch((error) => {
         reject(error);
       });
   });
@@ -281,10 +274,12 @@ function displayInfo(pokemonInfo, element, condition) {
     <hr>
     <div class="row">
       <p><strong>Nombre:</strong> ${pokemonInfo.name} shiny</p>
-      <p><strong>Tipos:</strong> ${pokemonInfo.types.map(e => e.type.name)}</p>
+      <p><strong>Tipos:</strong> ${pokemonInfo.types.map(
+        (e) => e.type.name
+      )}</p>
       <p><strong>Peso:</strong> ${pokemonInfo.weight} lbs</p>
       <p><strong>Habilidades:</strong> ${pokemonInfo.abilities.map(
-        e => e.ability.name
+        (e) => e.ability.name
       )}</p>
     </div>
     </div>`;
@@ -317,18 +312,18 @@ function handleError(error, typeElement, item) {
 function list(limitList) {
   for (let i = 1; i <= limitList; i++) {
     pokemonInfo(i)
-      .then(response => {
+      .then((response) => {
         displayInfo(
           response,
           "pokemonResults",
           `${
-            favouritesList.find(e => e.pokemon_order === response.order)
+            favouritesList.find((e) => e.pokemon_order === response.order)
               ? "selected"
               : ""
           }`
         );
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(handleError(error, "pokemon", pokemon.name));
       });
   }
@@ -341,10 +336,10 @@ function listFavourites() {
   if (favouritesList.length !== 0) {
     for (let i = 0; i < favouritesList.length; i++) {
       pokemonInfo(favouritesList[i].pokemon_name)
-        .then(response => {
+        .then((response) => {
           displayInfo(response, "pokemonResults", "selected");
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(
             handleError(error, "pokemon", favouritesList[i].pokemon_name)
           );

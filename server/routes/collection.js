@@ -20,8 +20,8 @@ router
   })
   .post("/savePokemon", (req, res) => {
     if (Object.keys(req.body).length != 0) {
-      const { id, order, name } = req.body;
-      query = `INSERT INTO collections(pokemon_order, pokemon_name, user_id) VALUES (${order}, '${name}', ${id})`;
+      const { user, order, name } = req.body;
+      query = `INSERT INTO collections(user_id, pokemon_order, pokemon_name) VALUES (${user}, ${order}, '${name}')`;
       connection.query(query, (err, rows) => {
         if (err) return res.status(500).json(err);
         return res.status(200).send("Se Guardo con Exito el Pokemon");
