@@ -17,12 +17,12 @@
           Listar Favoritos
         </button>
         <% } %> 
-        <% if(!userSession){ %>
+        <% if(!userName){ %>
         <a href="/auth/register">Registrarse</a>
         <a href="/auth/login">Iniciar Sesión</a>
         <% } %> 
-        <% if(userSession){ %>
-        <p><strong><%= userSession %></strong></p>
+        <% if(userName){ %>
+        <p><strong><%= userName %></strong></p>
         <a href="/auth/logout">Cerrar Sesión</a>
         <% } %>
       </div>

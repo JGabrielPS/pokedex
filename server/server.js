@@ -5,7 +5,8 @@ const app = express();
 
 //se declaran las variables que tendran los objetos para manejar las rutas
 const index = require("./routes/index");
-const user = require("./routes/users");
+const user = require("./routes/user");
+const collection = require("./routes/collection");
 const auth = require("./routes/auth");
 
 //middleware para manejar sesiones a traves de cookies
@@ -47,17 +48,20 @@ app.use((req, res, next) => {
 const morgan = require("morgan");
 app.use(morgan("dev"));
 
-//objeto global de node donde creamos la key userSession para
-//conocer nombre de usuario y si la sesion esta activa
-global.userSession = null;
+//objeto global de node donde creamos la key userName y userId para
+//conocer nombre de usuario y id ademas de conocer si la sesion esta activa
+global.userName = null;
+global.userId = null;
 
 //rutas usadas en el proyecto
 app.use("*", (req, res, next) => {
-  userSession = req.session.userName;
+  userName = req.session.userName;
+  userId = req.session.userId;
   next();
 });
 app.use("/", index);
 app.use("/user", user);
+app.use("/collection", collection);
 app.use("/auth", auth);
 //ruta para el caso de acceder a un recurso inexistente
 app.use((req, res) =>

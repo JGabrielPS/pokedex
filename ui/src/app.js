@@ -1,12 +1,12 @@
-let favouritesList = [];
-getPokemonsList()
-  .then(pokemonList => {
-    favouritesList = pokemonList;
-    console.log(favouritesList);
-  })
-  .catch(error => {
-    displayError(error);
-  });
+favouritesList = [];
+// getPokemonsList()
+//   .then(pokemonList => {
+//     favouritesList = pokemonList;
+//     console.log(favouritesList);
+//   })
+//   .catch(error => {
+//     displayError(error);
+//   });
 
 const pokemonList = [];
 
@@ -46,7 +46,7 @@ function loadImg(img, element) {
   element.src = img;
 }
 
-function saveSelectedPokemon() {
+function saveSelectedPokemon(user) {
   const savedPokemon = document.querySelector(".seleccionado");
   savePokemonList(
     favouritesList,
@@ -143,7 +143,7 @@ function getPokemonsList() {
 function getPokemons() {
   return new Promise((resolve, reject) => {
     axios
-      .get("http://localhost:3000/user/listPokemons")
+      .get("http://localhost:3000/collection/listPokemons")
       .then(response => {
         resolve(response.data);
       })
@@ -200,7 +200,7 @@ function savePokemon(name, id) {
 function savePokemonData(name, id) {
   return new Promise((resolve, reject) => {
     axios
-      .post("http://localhost:3000/user/saveFavouritePokemon", {
+      .post("http://localhost:3000/collection/savePokemon", {
         id: id,
         name: `${name}`
       })
@@ -228,7 +228,7 @@ function deletePokemons() {
 function deletePokemonList() {
   return new Promise((resolve, reject) => {
     axios
-      .delete("http://localhost:3000/user/deletePokemonsList")
+      .delete("http://localhost:3000/collection/deletePokemonsList")
       .then(response => {
         resolve(response);
       })
@@ -254,7 +254,7 @@ function deletePokemonData(id) {
   return new Promise((resolve, reject) => {
     axios({
       method: "delete",
-      url: "http://localhost:3000/user/deletePokemon",
+      url: "http://localhost:3000/collection/deletePokemon",
       data: {
         id: `${id}`
       }
