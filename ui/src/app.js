@@ -61,17 +61,19 @@ function saveSelectedPokemon(user) {
 
 function saveFavourites(user) {
   const checked = document.querySelectorAll(".seleccionado.noListado");
+  let promises = [];
   [...checked].map((pokemon) => {
-    savePokemonList(
-      favouritesList,
-      (params = {
+    promises.push(
+      savePokemonData(
         user,
-        pokemonid: `${+pokemon.dataset.pokemonid}`,
-        pokemonname: `${pokemon.dataset.pokemonname}`,
-      })
+        +pokemon.dataset.pokemonid,
+        pokemon.dataset.pokemonname
+      )
     );
   });
-  console.log(favouritesList);
+  Promise.allSettled(promises).then((resolve) => {
+    console.log(resolve)
+  });
 }
 
 function saveChanges() {
@@ -158,36 +160,36 @@ function getPokemons() {
   });
 }
 
-function savePokemonList(list, params) {
-  if (list.filter((e) => e.pokemon_name === name).length < 2) {
-    savePokemon(params.user, params.pokemonid, params.pokemonname)
-      .then((response) => {
-        if(params.one) alert(`${response}: ${params.pokemonname}`);
-        else console.log(`${response}: ${params.pokemonname}`);
-        list.push({
-          pokemon_order: params.pokemonid,
-          pokemon_name: params.pokemonname,
-        });
-      })
-      .catch((error) => {
-        alert(error);
-      });
-  } else {
-    alert("El pokemon ya esta en la lista dos veces");
-  }
-}
+// function savePokemonList(list, params) {
+//   if (list.filter((e) => e.pokemon_name === name).length < 2) {
+//     savePokemonData(params.user, params.pokemonid, params.pokemonname)
+//       .then((response) => {
+//         if (params.one) alert(`${response}: ${params.pokemonname}`);
+//         else console.log(`${response}: ${params.pokemonname}`);
+//         list.push({
+//           pokemon_order: params.pokemonid,
+//           pokemon_name: params.pokemonname,
+//         });
+//       })
+//       .catch((error) => {
+//         alert(error);
+//       });
+//   } else {
+//     alert("El pokemon ya esta en la lista dos veces");
+//   }
+// }
 
-function savePokemon(user, pokemonid, pokemonname) {
-  return new Promise((resolve, reject) => {
-    savePokemonData(user, pokemonid, pokemonname)
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-}
+// function savePokemon(user, pokemonid, pokemonname) {
+//   return new Promise((resolve, reject) => {
+//     savePokemonData(user, pokemonid, pokemonname)
+//       .then((response) => {
+//         resolve(response);
+//       })
+//       .catch((error) => {
+//         reject(error);
+//       });
+//   });
+// }
 
 function savePokemonData(user, pokemonid, pokemonname) {
   return new Promise((resolve, reject) => {
@@ -201,7 +203,7 @@ function savePokemonData(user, pokemonid, pokemonname) {
         resolve(response.data);
       })
       .catch((error) => {
-        reject("No se pudo guardar el error. Mensaje: " + error);
+        reject("No se pudo guardar el pokemon. Mensaje: " + error);
       });
   });
 }
