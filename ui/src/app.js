@@ -48,15 +48,16 @@ function loadImg(img, element) {
 
 function saveSelectedPokemon(user) {
   const savedPokemon = document.querySelector(".seleccionado");
-  savePokemonList(
-    favouritesList,
-    (params = {
-      user,
-      pokemonid: `${+savedPokemon.dataset.pokemonid}`,
-      pokemonname: `${savedPokemon.dataset.pokemonname}`,
-      one: true,
-    })
-  );
+  savePokemonData(
+    user,
+    +savedPokemon.dataset.pokemonid,
+    savedPokemon.dataset.pokemonname
+  )
+    .then((response) => alert(`Se guardo a ${response} con exito`))
+    .catch((error) => {
+      console.log(error);
+      alert(`Error: ${error.status}, ${error.data} esta repetido dos veces`);
+    });
 }
 
 function saveFavourites(user) {
@@ -72,7 +73,19 @@ function saveFavourites(user) {
     );
   });
   Promise.allSettled(promises).then((resolve) => {
-    console.log(resolve)
+    if (resolve.every((r) => r.status === "rejected")) {
+      alert("Todos los pokemones seleccionados estan repetidos dos veces");
+    } else {
+      let [pass, err] = [[], []];
+      resolve.map((r, i) => {
+        console.log(r);
+        if (r.status === "fulfilled") pass.push(r.value);
+        else err.push(r.reason.data);
+      });
+      if (err.length === 0) alert("Se guardaron todos los pokemones");
+      else alert(`Se guardaron: ${[...pass]} y estaban repetidos: ${[...err]}`);
+    }
+    console.log(resolve);
   });
 }
 
@@ -203,7 +216,7 @@ function savePokemonData(user, pokemonid, pokemonname) {
         resolve(response.data);
       })
       .catch((error) => {
-        reject("No se pudo guardar el pokemon. Mensaje: " + error);
+        reject(error.response);
       });
   });
 }

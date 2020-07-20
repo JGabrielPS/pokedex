@@ -26,7 +26,6 @@ const createCollection = `CREATE TABLE IF NOT EXISTS collections(
   pokemon_order INT(10) NOT NULL,
   pokemon_name VARCHAR(100) NOT NULL,
   user_id INT(255) NOT NULL,
-  PRIMARY KEY (pokemon_order, user_id),
 	CONSTRAINT FK_users FOREIGN KEY (user_id) REFERENCES users (user_id)
 )`;
 

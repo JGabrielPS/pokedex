@@ -5,6 +5,9 @@ const bodyParser = require("body-parser");
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 
+const findRepeatedPokemons = require("../middleware/findRepeatedPokemons");
+const handleEmptyBody = require("../middleware/handleEmptyBody");
+
 const connection = require("../dbConnection");
 let query = "";
 
@@ -18,17 +21,13 @@ router
       return res.status(200).json(datos);
     });
   })
-  .post("/savePokemon", (req, res) => {
-    if (Object.keys(req.body).length != 0) {
-      const { user, order, name } = req.body;
-      query = `INSERT INTO collections(user_id, pokemon_order, pokemon_name) VALUES (${user}, ${order}, '${name}')`;
-      connection.query(query, (err, rows) => {
-        if (err) return res.status(500).json(err);
-        return res.status(200).send("Se Guardo con Exito el Pokemon");
-      });
-    } else {
-      res.status(400).send("Objeto vacio");
-    }
+  .post("/savePokemon", findRepeatedPokemons, handleEmptyBody, (req, res) => {
+    const { user, order, name } = req.body;
+    query = `INSERT INTO collections(user_id, pokemon_order, pokemon_name) VALUES (${user}, ${order}, '${name}')`;
+    connection.query(query, (err, rows) => {
+      if (err) return res.status(500).json(err);
+      return res.status(200).send(name);
+    });
   })
   .delete("/deletePokemon", (req, res) => {
     const id = req.body.id;
