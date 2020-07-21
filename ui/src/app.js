@@ -1,37 +1,75 @@
 let favouritesList = [];
-// getPokemonsList()
-//   .then(pokemonList => {
-//     favouritesList = pokemonList;
-//     console.log(favouritesList);
-//   })
-//   .catch(error => {
-//     displayError(error);
-//   });
-
 const pokemonList = [];
 
 let limit = 0;
 
-function formData(event) {
+function listPokemons(user) {
+  clearList();
+  limit += 10;
+  list(limit, user);
+}
+
+function list(limitList, user) {
+  for (let i = 1; i <= limitList; i++) {
+    getPokemonData(i)
+      .then((response) => {
+        displayInfo(
+          response,
+          "pokemonResults",
+          `${
+            favouritesList.find((e) => e.pokemon_order === response.order)
+              ? "selected"
+              : ""
+          }`
+        );
+      })
+      .catch((error) => {
+        console.log(handleError(error, "pokemon", pokemon.name));
+      });
+  }
+  if (user !== "") {
+    showSaveButton("saveFavourites");
+  }
+}
+
+function listFavourites(user) {
+  clearList();
+  showSaveButton("saveChanges");
+  getPokemons(user)
+    .then((pokemonData) => {
+      if ([...pokemonData].length > 0) {
+        [...pokemonData].map((pokemon) => {
+          getPokemonData(pokemon.pokemon_name)
+            .then((response) => {
+              displayInfo(response, "pokemonResults", "selected");
+            })
+            .catch((error) => {
+              alert(error);
+            });
+        });
+      } else {
+        document.getElementById("pokemonResults").innerHTML +=
+          "La lista de favoritos esta vacia";
+      }
+      console.log([...pokemonData]);
+    })
+    .catch((error) => alert(error));
+}
+
+function formData(event, user) {
   clearList(); //TODO eliminar el contenido de pokemonResults
   event.preventDefault();
   const name = document.getElementById("pokemonName").value;
   //busca en la lista y realiza consultas a la poke API con el ID
-  pokemonInfo(name)
+  getPokemonData(name)
     .then((pokemonInfo) => {
       //muestra informacion en el DOM
       displayInfo(pokemonInfo, "pokemonSearchResult");
-      showSaveButton("savePokemon");
+      if (user !== "") showSaveButton("savePokemon");
     })
     .catch((error) => {
       displayError(error);
     });
-}
-
-function listPokemons() {
-  clearList();
-  limit += 10;
-  list(limit);
 }
 
 function agregarClase(div) {
@@ -123,27 +161,15 @@ function listFavouritesAgain(pokemons, callback) {
   callback();
 }
 
-function pokemonInfo(param) {
-  return new Promise((resolve, reject) => {
-    getPokemonData(param)
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-}
-
-function getPokemonData(param) {
+function getPokemonData(pokemon_name) {
   return new Promise((resolve, reject) => {
     axios
-      .get(`https://pokeapi.co/api/v2/pokemon/${param}`)
+      .get(`https://pokeapi.co/api/v2/pokemon/${pokemon_name}`)
       .then((response) => {
         resolve(response.data);
       })
       .catch((error) => {
-        reject(handleError(error, "pokemon", param));
+        reject(error.response);
       });
   });
 }
@@ -160,10 +186,10 @@ function getPokemonsList() {
   });
 }
 
-function getPokemons() {
+function getPokemons(user) {
   return new Promise((resolve, reject) => {
     axios
-      .get("http://localhost:3000/collection/listPokemons")
+      .get(`http://localhost:3000/collection/listPokemons/${user}`)
       .then((response) => {
         resolve(response.data);
       })
@@ -172,37 +198,6 @@ function getPokemons() {
       });
   });
 }
-
-// function savePokemonList(list, params) {
-//   if (list.filter((e) => e.pokemon_name === name).length < 2) {
-//     savePokemonData(params.user, params.pokemonid, params.pokemonname)
-//       .then((response) => {
-//         if (params.one) alert(`${response}: ${params.pokemonname}`);
-//         else console.log(`${response}: ${params.pokemonname}`);
-//         list.push({
-//           pokemon_order: params.pokemonid,
-//           pokemon_name: params.pokemonname,
-//         });
-//       })
-//       .catch((error) => {
-//         alert(error);
-//       });
-//   } else {
-//     alert("El pokemon ya esta en la lista dos veces");
-//   }
-// }
-
-// function savePokemon(user, pokemonid, pokemonname) {
-//   return new Promise((resolve, reject) => {
-//     savePokemonData(user, pokemonid, pokemonname)
-//       .then((response) => {
-//         resolve(response);
-//       })
-//       .catch((error) => {
-//         reject(error);
-//       });
-//   });
-// }
 
 function savePokemonData(user, pokemonid, pokemonname) {
   return new Promise((resolve, reject) => {
@@ -321,47 +316,5 @@ function handleError(error, typeElement, item) {
 
     default:
       return "Error no especificado";
-  }
-}
-
-function list(limitList) {
-  for (let i = 1; i <= limitList; i++) {
-    pokemonInfo(i)
-      .then((response) => {
-        displayInfo(
-          response,
-          "pokemonResults",
-          `${
-            favouritesList.find((e) => e.pokemon_order === response.order)
-              ? "selected"
-              : ""
-          }`
-        );
-      })
-      .catch((error) => {
-        console.log(handleError(error, "pokemon", pokemon.name));
-      });
-  }
-  showSaveButton("saveFavourites");
-}
-
-function listFavourites() {
-  clearList();
-  showSaveButton("saveChanges");
-  if (favouritesList.length !== 0) {
-    for (let i = 0; i < favouritesList.length; i++) {
-      pokemonInfo(favouritesList[i].pokemon_name)
-        .then((response) => {
-          displayInfo(response, "pokemonResults", "selected");
-        })
-        .catch((error) => {
-          console.log(
-            handleError(error, "pokemon", favouritesList[i].pokemon_name)
-          );
-        });
-    }
-  } else {
-    document.getElementById("pokemonResults").innerHTML +=
-      "La lista de favoritos esta vacia";
   }
 }

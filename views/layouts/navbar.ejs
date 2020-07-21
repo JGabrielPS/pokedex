@@ -5,23 +5,26 @@
 
       <div class="nav-bar" id="nav-btns">
         <% if(locals.index && index){ %>
-        <button class="nav-btn" type="button" onClick="listPokemons()">
+        <button
+          class="nav-btn"
+          type="button"
+          onClick="listPokemons('<%= userId %>')"
+        >
           Listar Pokemones
         </button>
+        <% if(userName){ %>
         <button
           type="button"
-          onClick="listFavourites()"
+          onClick="listFavourites('<%= userId %>')"
           class="nav-btn"
           style="margin-right: 30em;"
         >
           Listar Favoritos
         </button>
-        <% } %> 
-        <% if(!userName){ %>
+        <% } %> <% } %> <% if(!userName){ %>
         <a href="/auth/register">Registrarse</a>
         <a href="/auth/login">Iniciar Sesión</a>
-        <% } %> 
-        <% if(userName){ %>
+        <% } %> <% if(userName){ %>
         <p><strong><%= userName %></strong></p>
         <a href="/auth/logout">Cerrar Sesión</a>
         <% } %>

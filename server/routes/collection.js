@@ -12,13 +12,14 @@ const connection = require("../dbConnection");
 let query = "";
 
 router
-  .get("/listPokemons", (req, res) => {
-    query =
-      "SELECT pokemon_order, pokemon_name FROM collections ORDER BY pokemon_order";
+  .get("/listPokemons/:user", (req, res) => {
+    const { user } = req.params;
+    console.log(user);
+    query = `SELECT pokemon_order, pokemon_name FROM collections WHERE user_id = ${user} ORDER BY pokemon_order`;
     connection.query(query, (err, rows) => {
       if (err) return res.status(500).json(err);
-      let datos = JSON.parse(JSON.stringify(rows));
-      return res.status(200).json(datos);
+      let data = JSON.parse(JSON.stringify(rows));
+      return res.status(200).json(data);
     });
   })
   .post("/savePokemon", findRepeatedPokemons, handleEmptyBody, (req, res) => {
