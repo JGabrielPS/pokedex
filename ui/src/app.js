@@ -159,20 +159,36 @@ function saveChanges(user) {
     (e) => e.getAttribute("class") === "card"
   );
   //console.log(eliminados.map(e => e.dataset.pokemonid));
+  const promises = [];
   eliminados.map((pokemon) =>
-    deletePokemonData(pokemon.dataset.pokemonid, user)
-      .then((response) => {
-        alert(`${pokemon.dataset.pokemonname} ${response.data}`);
-      })
-      .catch((error) => {
-        alert(error);
-      })
+    promises.push(deletePokemonData(pokemon.dataset.pokemonid, user))
   );
-  eliminados.forEach((eliminado) => {
-    favouritesList = favouritesList.filter(
-      (e) => e.pokemon_order !== +eliminado.dataset.pokemonid
-    );
+  //console.log(promises);
+  Promise.allSettled(promises).then((resolve) => {
+    if (resolve.every((r) => r.status === "rejected")) {
+      alert(`Error al eliminar los pokemones, ${[...r]}`);
+    } else {
+      let [pass, err] = [[], []];
+      resolve.map((r) => {
+        console.log(r);
+        if (r.status === "fulfilled") pass.push(r.value);
+        else err.push(r.reason);
+      });
+      if (err.length === 0) alert("Se eliminaron todos los pokemones");
+      else
+        alert(
+          `Se eliminaron: ${[
+            ...pass,
+          ]}, los demas tuvieron los siguientes errores: ${[...err]}`
+        );
+    }
+    console.log(resolve);
   });
+  // eliminados.forEach((eliminado) => {
+  //   favouritesList = favouritesList.filter(
+  //     (e) => e.pokemon_order !== +eliminado.dataset.pokemonid
+  //   );
+  // });
   listFavourites(user);
 }
 
