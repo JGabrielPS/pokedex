@@ -12,60 +12,44 @@ function listPokemons(user) {
     getPokemons(user)
       .then((pokemonData) => {
         favouritesList = [...pokemonData];
-        for (let i = 1; i <= limit; i++) {
-          getPokemonData(i)
-            .then((pokemonData) => {
-              toogleSelectClassPokemon(
-                favouritesList,
-                pokemonData,
-                "pokemonResults",
-                user,
-                enableAddClass
-              );
-            })
-            .catch((error) => {
-              console.log(handleError(error, "pokemon", pokemon.name));
-            });
-        }
+        displayPokemonList(
+          limit,
+          favouritesList,
+          "pokemonResults",
+          user,
+          enableAddClass
+        );
         showSaveButton("saveFavourites");
       })
       .catch((error) => console.log(error));
   } else {
-    for (let i = 1; i <= limit; i++) {
-      getPokemonData(i)
-        .then((pokemonData) => {
-          toogleSelectClassPokemon(
-            favouritesList,
-            pokemonData,
-            "pokemonResults",
-            user,
-            enableAddClass
-          );
-        })
-        .catch((error) => {
-          console.log(handleError(error, "pokemon", pokemon.name));
-        });
-    }
+    displayPokemonList(
+      limit,
+      favouritesList,
+      "pokemonResults",
+      user,
+      enableAddClass
+    );
   }
 }
 
-// function displayPokemonList(limit, list, element, user, enableAddClass) {
-//   for (let i = 1; i <= limit; i++) {
-//     getPokemonData(i)
-//       .then((pokemonData) => {
-//         toogleSelectClassPokemon(
-//           list,
-//           pokemonData,
-//           element,
-//           user,
-//           enableAddClass
-//         );
-//       })
-//       .catch((error) => {
-//         console.log(handleError(error, "pokemon", pokemon.name));
-//       });
-//   }
-// }
+function displayPokemonList(limit, list, element, user, enableAddClass) {
+  for (let i = 1; i <= limit; i++) {
+    getPokemonData(i)
+      .then((pokemonData) => {
+        toogleSelectClassPokemon(
+          list,
+          pokemonData,
+          element,
+          user,
+          enableAddClass
+        );
+      })
+      .catch((error) => {
+        console.log(handleError(error, "pokemon", pokemon.name));
+      });
+  }
+}
 
 function listFavourites(user) {
   clearList();
