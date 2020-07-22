@@ -35,9 +35,9 @@ function listPokemons(user) {
       getPokemonData(i)
         .then((pokemonData) => {
           toogleSelectClassPokemon(
-            list,
+            favouritesList,
             pokemonData,
-            element,
+            "pokemonResults",
             user,
             enableAddClass
           );
@@ -49,25 +49,23 @@ function listPokemons(user) {
   }
 }
 
-function displayPokemonList(limit, list, element, user, enableAddClass) {
-  return new Promise((resolve, reject) => {
-    for (let i = 1; i <= limit; i++) {
-      getPokemonData(i)
-        .then((pokemonData) => {
-          toogleSelectClassPokemon(
-            list,
-            pokemonData,
-            element,
-            user,
-            enableAddClass
-          );
-        })
-        .catch((error) => {
-          console.log(handleError(error, "pokemon", pokemon.name));
-        });
-    }
-  });
-}
+// function displayPokemonList(limit, list, element, user, enableAddClass) {
+//   for (let i = 1; i <= limit; i++) {
+//     getPokemonData(i)
+//       .then((pokemonData) => {
+//         toogleSelectClassPokemon(
+//           list,
+//           pokemonData,
+//           element,
+//           user,
+//           enableAddClass
+//         );
+//       })
+//       .catch((error) => {
+//         console.log(handleError(error, "pokemon", pokemon.name));
+//       });
+//   }
+// }
 
 function listFavourites(user) {
   clearList();
