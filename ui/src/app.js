@@ -33,24 +33,6 @@ function listPokemons(user) {
   }
 }
 
-function displayPokemonList(limit, list, element, user, enableAddClass) {
-  for (let i = 1; i <= limit; i++) {
-    getPokemonData(i)
-      .then((pokemonData) => {
-        toogleSelectClassPokemon(
-          list,
-          pokemonData,
-          element,
-          user,
-          enableAddClass
-        );
-      })
-      .catch((error) => {
-        console.log(handleError(error, "pokemon", pokemon.name));
-      });
-  }
-}
-
 function listFavourites(user) {
   clearList();
   showSaveButton("saveChanges");
@@ -58,9 +40,10 @@ function listFavourites(user) {
     .then((pokemonData) => {
       if ([...pokemonData].length > 0) {
         [...pokemonData].map((pokemon) => {
+          const count = pokemon.repeated;
           getPokemonData(pokemon.pokemon_name)
             .then((pokemonData) => {
-              displayInfo(pokemonData, "pokemonResults", user, true);
+              displayInfo(pokemonData, "pokemonResults", user, true, count);
             })
             .catch((error) => {
               alert(error);
@@ -96,21 +79,6 @@ function searchPokemon(event, user) {
     });
 }
 
-function toogleSelectClassPokemon(
-  list,
-  pokemonData,
-  element,
-  user,
-  enableAddClass
-) {
-  //console.log(list, pokemonData.name);
-  if (list.find((pokemon) => pokemon.pokemon_name === pokemonData.name)) {
-    displayInfo(pokemonData, element, user, enableAddClass);
-  } else {
-    displayInfo(pokemonData, element, "", enableAddClass);
-  }
-}
-
 function showSaveButton(button) {
   document.querySelector(`#${button}`).style.visibility = "visible";
 }
@@ -136,6 +104,8 @@ function saveSelectedPokemon(user) {
 function saveFavourites(user) {
   const checked = document.querySelectorAll(".seleccionado.noListado");
   let promises = [];
+  console.log(favouritesList);
+  console.log([...checked]);
   [...checked].map((pokemon) => {
     promises.push(
       savePokemonData(
@@ -306,7 +276,47 @@ function deletePokemonData(id) {
   });
 }
 
-function displayInfo(pokemonInfo, element, user, addClassEnabled) {
+function displayPokemonList(limit, list, element, user, enableAddClass) {
+  for (let i = 1; i <= limit; i++) {
+    getPokemonData(i)
+      .then((pokemonData) => {
+        toogleSelectClassPokemon(
+          list,
+          pokemonData,
+          element,
+          user,
+          enableAddClass
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+}
+
+function toogleSelectClassPokemon(
+  list,
+  pokemonData,
+  element,
+  user,
+  enableAddClass
+) {
+  //console.log(list, pokemonData.name);
+  const findPokemon = list.find(
+    (pokemon) => pokemon.pokemon_name === pokemonData.name
+  );
+  //console.log(findPokemon);
+  if (findPokemon !== undefined) {
+    const count = list.find(
+      (pokemon) => pokemon.pokemon_name === pokemonData.name
+    ).repeated;
+    displayInfo(pokemonData, element, user, enableAddClass, count);
+  } else {
+    displayInfo(pokemonData, element, "", enableAddClass, 0);
+  }
+}
+
+function displayInfo(pokemonInfo, element, user, addClassEnabled, count) {
   document.getElementById(element).innerHTML += `
     <div class="card ${
       user === "" || user === undefined ? "noListado" : "seleccionado"
@@ -326,6 +336,9 @@ function displayInfo(pokemonInfo, element, user, addClassEnabled) {
       <p><strong>Habilidades:</strong> ${pokemonInfo.abilities.map(
         (e) => e.ability.name
       )}</p>
+      <p ${
+        user === "" || user === undefined ? "hidden" : ""
+      }><strong>${count}</strong></p>
     </div>
     </div>`;
 }
