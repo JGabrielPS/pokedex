@@ -60,23 +60,45 @@ function listFavourites(user) {
 function searchPokemon(event, user) {
   clearList(); //TODO eliminar el contenido de pokemonResults
   event.preventDefault();
-  const enableAddClass = user !== "" ? true : false;
+  let enableAddClass = false;
   const name = document.getElementById("pokemonName").value;
-  //busca en la lista y realiza consultas a la poke API con el ID
-  getPokemonData(name)
-    .then((pokemonData) => {
-      toogleSelectClassPokemon(
-        favouritesList,
-        pokemonData,
-        "pokemonSearchResult",
-        user,
-        enableAddClass
-      );
-      if (user !== "") showSaveButton("savePokemon");
-    })
-    .catch((error) => {
-      displayError(error);
-    });
+  if (user !== "") {
+    enableAddClass = true;
+    getPokemons(user)
+      .then((pokemonData) => {
+        favouritesList = [...pokemonData];
+        getPokemonData(name)
+          .then((pokemonData) => {
+            toogleSelectClassPokemon(
+              favouritesList,
+              pokemonData,
+              "pokemonSearchResult",
+              user,
+              enableAddClass
+            );
+            if (user !== "") showSaveButton("savePokemon");
+          })
+          .catch((error) => {
+            displayError(name, error);
+          });
+      })
+      .catch((error) => console.log(error));
+  } else {
+    getPokemonData(name)
+      .then((pokemonData) => {
+        toogleSelectClassPokemon(
+          favouritesList,
+          pokemonData,
+          "pokemonSearchResult",
+          user,
+          enableAddClass
+        );
+        if (user !== "") showSaveButton("savePokemon");
+      })
+      .catch((error) => {
+        displayError(name, error);
+      });
+  }
 }
 
 function showSaveButton(button) {
@@ -102,10 +124,8 @@ function saveSelectedPokemon(user) {
 }
 
 function saveFavourites(user) {
-  const checked = document.querySelectorAll(".seleccionado.noListado");
+  const checked = document.querySelectorAll(".seleccionado");
   let promises = [];
-  console.log(favouritesList);
-  console.log([...checked]);
   [...checked].map((pokemon) => {
     promises.push(
       savePokemonData(
@@ -130,18 +150,19 @@ function saveFavourites(user) {
     }
     console.log(resolve);
   });
+  listPokemons(user);
 }
 
-function saveChanges() {
+function saveChanges(user) {
   const checked = document.querySelectorAll(".card");
   const eliminados = [...checked].filter(
     (e) => e.getAttribute("class") === "card"
   );
-  console.log(eliminados[0].dataset.pokemonid);
+  //console.log(eliminados.map(e => e.dataset.pokemonid));
   eliminados.map((pokemon) =>
-    deletePokemon(pokemon.dataset.pokemonid)
+    deletePokemonData(pokemon.dataset.pokemonid, user)
       .then((response) => {
-        console.log(response);
+        alert(`${pokemon.dataset.pokemonname} ${response.data}`);
       })
       .catch((error) => {
         alert(error);
@@ -152,7 +173,7 @@ function saveChanges() {
       (e) => e.pokemon_order !== +eliminado.dataset.pokemonid
     );
   });
-  listFavourites();
+  listFavourites(user);
 }
 
 function listFavouritesAgain(pokemons, callback) {
@@ -221,17 +242,17 @@ function savePokemonData(user, pokemonid, pokemonname) {
   });
 }
 
-function deletePokemons() {
-  return new Promise((resolve, reject) => {
-    deletePokemonList()
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-}
+// function deletePokemons() {
+//   return new Promise((resolve, reject) => {
+//     deleteist()
+//       .then((response) => {
+//         resolve(response);
+//       })
+//       .catch((error) => {
+//         reject(error);
+//       });
+//   });
+// }
 
 function deletePokemonList() {
   return new Promise((resolve, reject) => {
@@ -246,25 +267,25 @@ function deletePokemonList() {
   });
 }
 
-function deletePokemon(id) {
-  return new Promise((resolve, reject) => {
-    deletePokemonData(id)
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-}
+// function deletePokemon(pokemonid) {
+//   return new Promise((resolve, reject) => {
+//     deletePokemonData(id)
+//       .then((response) => {
+//         resolve(response);
+//       })
+//       .catch((error) => {
+//         reject(error);
+//       });
+//   });
+// }
 
-function deletePokemonData(id) {
+function deletePokemonData(pokemonid, user) {
   return new Promise((resolve, reject) => {
     axios({
       method: "delete",
-      url: "http://localhost:3000/collection/deletePokemon",
+      url: `http://localhost:3000/collection/deletePokemon/${user}`,
       data: {
-        id: `${id}`,
+        order: `${pokemonid}`,
       },
     })
       .then((response) => {
@@ -322,7 +343,9 @@ function displayInfo(pokemonInfo, element, user, addClassEnabled, count) {
       user === "" || user === undefined ? "noListado" : "seleccionado"
     }" data-pokemonId="${pokemonInfo.id}" data-pokemonName="${
     pokemonInfo.name
-  }" ${addClassEnabled ? "onClick='addClass(this)'" : ""} > 
+  }" data-pokemonCount="${count}" ${
+    addClassEnabled ? "onClick='addClass(this)'" : ""
+  } > 
     <img src='./rsc/load.gif' onload='loadImg("${
       pokemonInfo.sprites.front_shiny
     }", this)' alt='${pokemonInfo.name}'>
@@ -347,9 +370,10 @@ function addClass(div) {
   div.classList.toggle("seleccionado");
 }
 
-function displayError(error) {
+function displayError(element, error) {
+  console.log(error);
   document.getElementById("pokemonResults").innerHTML = `
-    <p id="error-message">${error}</p>
+    <p id="error-message">${element} ${error.data}, error ${error.status}</p>
   `;
 }
 

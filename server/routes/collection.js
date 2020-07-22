@@ -30,12 +30,13 @@ router
       return res.status(200).send(name);
     });
   })
-  .delete("/deletePokemon", (req, res) => {
-    const id = req.body.id;
-    query = `DELETE FROM pokemon WHERE pokemon_order=${id}`;
+  .delete("/deletePokemon/:user", (req, res) => {
+    const { order } = req.body;
+    const { user } = req.params;
+    query = `DELETE FROM collections WHERE pokemon_order=${order} AND user_id = ${user}`;
     connection.query(query, (err) => {
       if (err) return res.status(500).json(err);
-      return res.status(200).send("El pokemon se elimino exitosamente");
+      return res.status(200).send("se elimino exitosamente");
     });
   })
   .delete("/deletePokemonsList", (req, res) => {
