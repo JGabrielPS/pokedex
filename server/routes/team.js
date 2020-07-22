@@ -5,7 +5,6 @@ const bodyParser = require("body-parser");
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 
-const findRepeatedPokemons = require("../middleware/findRepeatedPokemons");
 const handleEmptyBody = require("../middleware/handleEmptyBody");
 
 const connection = require("../dbConnection");
@@ -22,7 +21,7 @@ router
       return res.status(200).json(data);
     });
   })
-  .post("/savePokemon", findRepeatedPokemons, handleEmptyBody, (req, res) => {
+  .post("/savePokemon", handleEmptyBody, (req, res) => {
     const { user, order, name } = req.body;
     query = `INSERT INTO collections(user_id, pokemon_order, pokemon_name) VALUES (${user}, ${order}, '${name}')`;
     connection.query(query, (err, rows) => {

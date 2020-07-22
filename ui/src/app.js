@@ -19,7 +19,8 @@ function listPokemons(user) {
           user,
           enableAddClass
         );
-        showSaveButton("saveFavourites");
+        showButton("saveFavourites");
+        showButton("saveTeam");
       })
       .catch((error) => console.log(error));
   } else {
@@ -35,7 +36,7 @@ function listPokemons(user) {
 
 function listFavourites(user) {
   clearList();
-  showSaveButton("saveChanges");
+  showButton("saveChanges");
   getPokemons(user)
     .then((pokemonData) => {
       if ([...pokemonData].length > 0) {
@@ -76,7 +77,7 @@ function searchPokemon(event, user) {
               user,
               enableAddClass
             );
-            if (user !== "") showSaveButton("savePokemon");
+            if (user !== "") showButton("savePokemon");
           })
           .catch((error) => {
             displayError(name, error);
@@ -93,7 +94,7 @@ function searchPokemon(event, user) {
           user,
           enableAddClass
         );
-        if (user !== "") showSaveButton("savePokemon");
+        if (user !== "") showButton("savePokemon");
       })
       .catch((error) => {
         displayError(name, error);
@@ -101,7 +102,7 @@ function searchPokemon(event, user) {
   }
 }
 
-function showSaveButton(button) {
+function showButton(button) {
   document.querySelector(`#${button}`).style.visibility = "visible";
 }
 
@@ -399,6 +400,7 @@ function clearList() {
   document.querySelector("#savePokemon").style.visibility = "hidden";
   document.querySelector("#saveFavourites").style.visibility = "hidden";
   document.querySelector("#saveChanges").style.visibility = "hidden";
+  document.querySelector("#saveTeam").style.visibility = "hidden";
 }
 
 function handleError(error, typeElement, item) {

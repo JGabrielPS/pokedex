@@ -7,6 +7,7 @@ const app = express();
 const index = require("./routes/index");
 const user = require("./routes/user");
 const collection = require("./routes/collection");
+const team = require("./routes/team");
 const auth = require("./routes/auth");
 
 //middleware para manejar sesiones a traves de cookies
@@ -62,6 +63,7 @@ app.use("*", (req, res, next) => {
 app.use("/", index);
 app.use("/user", user);
 app.use("/collection", collection);
+app.use("/team", team);
 app.use("/auth", auth);
 //ruta para el caso de acceder a un recurso inexistente
 app.use((req, res) =>
