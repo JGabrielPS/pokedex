@@ -5,7 +5,9 @@ let limit = 0;
 
 function listPokemons(user) {
   clearList();
+  let enableAddClass = false;
   if (user !== "") {
+    enableAddClass = true;
     getPokemons(user)
       .then((pokemonData) => {
         favouritesList = [...pokemonData];
@@ -20,14 +22,14 @@ function listPokemons(user) {
           favouritesList,
           pokemonData,
           "pokemonResults",
-          user
+          user,
+          enableAddClass
         );
       })
       .catch((error) => {
         console.log(handleError(error, "pokemon", pokemon.name));
       });
   }
-  displayAddClass(user);
   if (user !== "") {
     showSaveButton("saveFavourites");
   }
@@ -42,7 +44,7 @@ function listFavourites(user) {
         [...pokemonData].map((pokemon) => {
           getPokemonData(pokemon.pokemon_name)
             .then((pokemonData) => {
-              displayInfo(pokemonData, "pokemonResults", user);
+              displayInfo(pokemonData, "pokemonResults", user, true);
             })
             .catch((error) => {
               alert(error);
@@ -59,6 +61,7 @@ function listFavourites(user) {
 function searchPokemon(event, user) {
   clearList(); //TODO eliminar el contenido de pokemonResults
   event.preventDefault();
+  const enableAddClass = user !== "" ? true : false;
   const name = document.getElementById("pokemonName").value;
   //busca en la lista y realiza consultas a la poke API con el ID
   getPokemonData(name)
@@ -67,7 +70,8 @@ function searchPokemon(event, user) {
         favouritesList,
         pokemonData,
         "pokemonSearchResult",
-        user
+        user,
+        enableAddClass
       );
       if (user !== "") showSaveButton("savePokemon");
     })
@@ -76,11 +80,17 @@ function searchPokemon(event, user) {
     });
 }
 
-function toogleSelectClassPokemon(list, pokemonData, element, user) {
+function toogleSelectClassPokemon(
+  list,
+  pokemonData,
+  element,
+  user,
+  enableAddClass
+) {
   if (list.find((pokemon) => pokemon.pokemon_name === pokemonData.name)) {
-    displayInfo(pokemonData, element, user);
+    displayInfo(pokemonData, element, user, enableAddClass);
   } else {
-    displayInfo(pokemonData, element, "");
+    displayInfo(pokemonData, element, "", enableAddClass);
   }
 }
 
@@ -279,13 +289,13 @@ function deletePokemonData(id) {
   });
 }
 
-function displayInfo(pokemonInfo, element, user) {
+function displayInfo(pokemonInfo, element, user, addClassEnabled) {
   document.getElementById(element).innerHTML += `
     <div class="card ${
       user === "" || user === undefined ? "noListado" : "seleccionado"
     }" data-pokemonId="${pokemonInfo.id}" data-pokemonName="${
     pokemonInfo.name
-  }"> 
+  }" ${addClassEnabled ? "onClick='addClass(this)'" : ""} > 
     <img src='./rsc/load.gif' onload='loadImg("${
       pokemonInfo.sprites.front_shiny
     }", this)' alt='${pokemonInfo.name}'>
@@ -301,16 +311,6 @@ function displayInfo(pokemonInfo, element, user) {
       )}</p>
     </div>
     </div>`;
-}
-
-function displayAddClass(user) {
-  if (user !== "") {
-    const pokemonCards = document.querySelectorAll(".seleccionado.noListado");
-    console.log(pokemonCards);
-    // pokemonCards.onClick = function () {
-    //   addClass(this);
-    // };
-  }
 }
 
 function addClass(div) {
