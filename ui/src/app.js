@@ -5,28 +5,29 @@ let limit = 0;
 
 function listPokemons(user) {
   clearList();
+  if (user !== "") {
+    getPokemons(user)
+      .then((pokemonData) => {
+        favouritesList = [...pokemonData];
+      })
+      .catch((error) => console.log(error));
+  }
   limit += 10;
-  list(limit, user);
-}
-
-function list(limitList, user) {
-  for (let i = 1; i <= limitList; i++) {
+  for (let i = 1; i <= limit; i++) {
     getPokemonData(i)
-      .then((response) => {
-        displayInfo(
-          response,
+      .then((pokemonData) => {
+        toogleSelectClassPokemon(
+          favouritesList,
+          pokemonData,
           "pokemonResults",
-          `${
-            favouritesList.find((e) => e.pokemon_order === response.order)
-              ? "selected"
-              : ""
-          }`
+          user
         );
       })
       .catch((error) => {
         console.log(handleError(error, "pokemon", pokemon.name));
       });
   }
+  displayAddClass(user);
   if (user !== "") {
     showSaveButton("saveFavourites");
   }
@@ -40,8 +41,8 @@ function listFavourites(user) {
       if ([...pokemonData].length > 0) {
         [...pokemonData].map((pokemon) => {
           getPokemonData(pokemon.pokemon_name)
-            .then((response) => {
-              displayInfo(response, "pokemonResults", "selected");
+            .then((pokemonData) => {
+              displayInfo(pokemonData, "pokemonResults", user);
             })
             .catch((error) => {
               alert(error);
@@ -51,20 +52,23 @@ function listFavourites(user) {
         document.getElementById("pokemonResults").innerHTML +=
           "La lista de favoritos esta vacia";
       }
-      console.log([...pokemonData]);
     })
     .catch((error) => alert(error));
 }
 
-function formData(event, user) {
+function searchPokemon(event, user) {
   clearList(); //TODO eliminar el contenido de pokemonResults
   event.preventDefault();
   const name = document.getElementById("pokemonName").value;
   //busca en la lista y realiza consultas a la poke API con el ID
   getPokemonData(name)
-    .then((pokemonInfo) => {
-      //muestra informacion en el DOM
-      displayInfo(pokemonInfo, "pokemonSearchResult");
+    .then((pokemonData) => {
+      toogleSelectClassPokemon(
+        favouritesList,
+        pokemonData,
+        "pokemonSearchResult",
+        user
+      );
       if (user !== "") showSaveButton("savePokemon");
     })
     .catch((error) => {
@@ -72,8 +76,12 @@ function formData(event, user) {
     });
 }
 
-function agregarClase(div) {
-  div.classList.toggle("seleccionado");
+function toogleSelectClassPokemon(list, pokemonData, element, user) {
+  if (list.find((pokemon) => pokemon.pokemon_name === pokemonData.name)) {
+    displayInfo(pokemonData, element, user);
+  } else {
+    displayInfo(pokemonData, element, "");
+  }
 }
 
 function showSaveButton(button) {
@@ -271,13 +279,13 @@ function deletePokemonData(id) {
   });
 }
 
-function displayInfo(pokemonInfo, element, condition) {
+function displayInfo(pokemonInfo, element, user) {
   document.getElementById(element).innerHTML += `
     <div class="card ${
-      condition === "selected" ? "seleccionado" : "noListado"
+      user === "" || user === undefined ? "noListado" : "seleccionado"
     }" data-pokemonId="${pokemonInfo.id}" data-pokemonName="${
     pokemonInfo.name
-  }" onClick="agregarClase(this)"> 
+  }"> 
     <img src='./rsc/load.gif' onload='loadImg("${
       pokemonInfo.sprites.front_shiny
     }", this)' alt='${pokemonInfo.name}'>
@@ -293,6 +301,20 @@ function displayInfo(pokemonInfo, element, condition) {
       )}</p>
     </div>
     </div>`;
+}
+
+function displayAddClass(user) {
+  if (user !== "") {
+    const pokemonCards = document.querySelectorAll(".seleccionado.noListado");
+    console.log(pokemonCards);
+    // pokemonCards.onClick = function () {
+    //   addClass(this);
+    // };
+  }
+}
+
+function addClass(div) {
+  div.classList.toggle("seleccionado");
 }
 
 function displayError(error) {
