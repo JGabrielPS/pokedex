@@ -14,7 +14,7 @@
           <div>
             <form onSubmit="searchPokemon(event, '<%= userId %>')">
               <label for="pokemonName">Ingrese el nombre del pokemon</label
-              ><input type="text" id="pokemonName" required="required" />
+              ><input type="text" id="pokemonName" required />
               <div>
                 <button type="submit">Consultar</button>
               </div>
@@ -55,6 +55,7 @@
               Guardar Cambios
             </button>
           </div>
+          <div class="box" id="teamResult"></div>
         </div>
       </div>
     </div>

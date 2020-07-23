@@ -12,6 +12,7 @@ function listPokemons(user) {
     getPokemons(user)
       .then((pokemonData) => {
         favouritesList = [...pokemonData];
+        console.log(favouritesList);
         displayPokemonList(
           limit,
           favouritesList,
@@ -102,14 +103,6 @@ function searchPokemon(event, user) {
   }
 }
 
-function showButton(button) {
-  document.querySelector(`#${button}`).style.visibility = "visible";
-}
-
-function loadImg(img, element) {
-  element.src = img;
-}
-
 function saveSelectedPokemon(user) {
   const savedPokemon = document.querySelector(".seleccionado");
   savePokemonData(
@@ -185,23 +178,7 @@ function saveChanges(user) {
     }
     console.log(resolve);
   });
-  // eliminados.forEach((eliminado) => {
-  //   favouritesList = favouritesList.filter(
-  //     (e) => e.pokemon_order !== +eliminado.dataset.pokemonid
-  //   );
-  // });
   listFavourites(user);
-}
-
-function listFavouritesAgain(pokemons, callback) {
-  pokemons.map((pokemon) => {
-    savePokemonList(
-      favouritesList,
-      pokemon.dataset.pokemonname,
-      +pokemon.dataset.pokemonid
-    );
-  });
-  callback();
 }
 
 function getPokemonData(pokemon_name) {
@@ -213,18 +190,6 @@ function getPokemonData(pokemon_name) {
       })
       .catch((error) => {
         reject(error.response);
-      });
-  });
-}
-
-function getPokemonsList() {
-  return new Promise((resolve, reject) => {
-    getPokemons()
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((error) => {
-        reject(error);
       });
   });
 }
@@ -259,18 +224,6 @@ function savePokemonData(user, pokemonid, pokemonname) {
   });
 }
 
-// function deletePokemons() {
-//   return new Promise((resolve, reject) => {
-//     deleteist()
-//       .then((response) => {
-//         resolve(response);
-//       })
-//       .catch((error) => {
-//         reject(error);
-//       });
-//   });
-// }
-
 function deletePokemonList() {
   return new Promise((resolve, reject) => {
     axios
@@ -283,18 +236,6 @@ function deletePokemonList() {
       });
   });
 }
-
-// function deletePokemon(pokemonid) {
-//   return new Promise((resolve, reject) => {
-//     deletePokemonData(id)
-//       .then((response) => {
-//         resolve(response);
-//       })
-//       .catch((error) => {
-//         reject(error);
-//       });
-//   });
-// }
 
 function deletePokemonData(pokemonid, user) {
   return new Promise((resolve, reject) => {
@@ -392,6 +333,14 @@ function displayError(element, error) {
   document.getElementById("pokemonResults").innerHTML = `
     <p id="error-message">${element} ${error.data}, error ${error.status}</p>
   `;
+}
+
+function showButton(button) {
+  document.querySelector(`#${button}`).style.visibility = "visible";
+}
+
+function loadImg(img, element) {
+  element.src = img;
 }
 
 function clearList() {
