@@ -33,7 +33,7 @@
         <a href="/auth/register">Registrarse</a>
         <a href="/auth/login">Iniciar Sesión</a>
         <% } %> <% if(userName){ %>
-        <p><strong><%= userName %></strong></p>
+        <p id="userdata" data-userid="<%= userId %>"><strong><%= userName %></strong></p>
         <a href="/auth/logout">Cerrar Sesión</a>
         <% } %>
       </div>

@@ -1,7 +1,12 @@
 let favouritesList = [];
-const pokemonList = [];
-
 let limit = 0;
+const userdata =
+  document.getElementById("userdata") === null
+    ? ""
+    : document.getElementById("userdata").dataset.userid;
+
+listPokemons(userdata);
+//listTeam(document.getElementById("userdata").dataset.userid);
 
 function listPokemons(user) {
   clearList();
