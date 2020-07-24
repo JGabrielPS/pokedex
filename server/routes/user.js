@@ -28,11 +28,12 @@ router
       bcrypt.hash(password, 10, (err, hash) => {
         query = `INSERT INTO users(user_name, user_password) VALUES ("${username}", "${hash}")`;
         connection.query(query, (err, result, rows) => {
+          console.log(err);
           if (err) {
             const errMsg = Object.values(err)[2];
             return res.redirect("/auth/register");
           } else {
-            res.redirect("/");
+            res.redirect("/auth/login");
           }
         });
       });

@@ -186,6 +186,21 @@ function saveChanges(user) {
   listFavourites(user);
 }
 
+function listTeam(user) {
+  if (user !== "") {
+    getPokemonTeam(user)
+      .then((pokemonTeam) => console.log(pokemonTeam))
+      .catch((error) => console.log(error));
+  } else {
+    console.log("No hay usuario");
+  }
+}
+
+function saveTeam(user) {
+  const checked = document.querySelectorAll(".seleccionado");
+  console.log([...checked].map((pokemon) => pokemon.dataset.pokemonid));
+}
+
 function getPokemonData(pokemon_name) {
   return new Promise((resolve, reject) => {
     axios
@@ -257,6 +272,28 @@ function deletePokemonData(pokemonid, user) {
       .catch((error) => {
         reject(error);
       });
+  });
+}
+
+function getPokemonTeam(user) {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`http://localhost:3000/team/listPokemons/${user}`)
+      .then((response) => resolve(response))
+      .catch((error) => reject(error));
+  });
+}
+
+function savePokemonInTeam(user, pokemon_order, pokemon_name) {
+  return new Promise((resolve, reject) => {
+    axios
+      .post("http://localhost:3000/team/savePokemon", {
+        user,
+        order: `${pokemon_order}`,
+        name: `${pokemon_name}`,
+      })
+      .then((response) => resolve(response))
+      .catch((error) => reject(error));
   });
 }
 
