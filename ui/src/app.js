@@ -6,7 +6,7 @@ const userdata =
     : document.getElementById("userdata").dataset.userid;
 
 listPokemons(userdata);
-//listTeam(document.getElementById("userdata").dataset.userid);
+listTeam(userdata);
 
 function listPokemons(user) {
   clearList();
@@ -187,18 +187,62 @@ function saveChanges(user) {
 }
 
 function listTeam(user) {
+  clearTeamList();
   if (user !== "") {
     getPokemonTeam(user)
-      .then((pokemonTeam) => console.log(pokemonTeam))
-      .catch((error) => console.log(error));
+      .then((pokemonTeam) => {
+        if ([...pokemonTeam].length > 0) {
+          [...pokemonTeam].map((pokemon) => {
+            getPokemonData(pokemon.pokemon_name)
+              .then((pokemonData) => {
+                displayPokemonInTeam(pokemonData);
+              })
+              .catch((error) => {
+                alert(error);
+              });
+          });
+          showButton("deleteTeam");
+        } else {
+          document.getElementById("teamResults").innerHTML +=
+            "La lista del equipo esta vacia";
+        }
+      })
+      .catch((error) => alert(error));
   } else {
-    console.log("No hay usuario");
+    console.log("No hay usuario logueado");
   }
 }
 
 function saveTeam(user) {
   const checked = document.querySelectorAll(".seleccionado");
-  console.log([...checked].map((pokemon) => pokemon.dataset.pokemonid));
+  //console.log([...checked].map((pokemon) => pokemon.dataset.pokemonid));
+  let promises = [];
+  [...checked].map((pokemon) =>
+    promises.push(
+      savePokemonInTeam(
+        user,
+        pokemon.dataset.pokemonid,
+        pokemon.dataset.pokemonname
+      )
+    )
+  );
+  Promise.allSettled(promises).then((resolve) => {
+    if (resolve.every((r) => r.status === "rejected")) {
+      alert("El equipo esta lleno");
+    } else {
+      let [pass, err] = [[], []];
+      resolve.map((r) => {
+        console.log(r);
+        if (r.status === "fulfilled") pass.push(r.value);
+        else err.push(r.reason.data);
+      });
+      if (err.length === 0) alert("Se guardaron todos los pokemones");
+      else alert(`Se guardaron: ${[...pass]} y estaban repetidos: ${[...err]}`);
+      listTeam(user);
+    }
+    console.log(resolve);
+  });
+  //listTeam(user)
 }
 
 function getPokemonData(pokemon_name) {
@@ -279,7 +323,7 @@ function getPokemonTeam(user) {
   return new Promise((resolve, reject) => {
     axios
       .get(`http://localhost:3000/team/listPokemons/${user}`)
-      .then((response) => resolve(response))
+      .then((response) => resolve(response.data))
       .catch((error) => reject(error));
   });
 }
@@ -366,8 +410,18 @@ function displayInfo(pokemonInfo, element, user, addClassEnabled, count) {
     </div>`;
 }
 
+function displayPokemonInTeam(pokemonInfo) {
+  document.getElementById("teamResults").innerHTML += `
+  <img class="enEquipo" src='./rsc/load.gif' onload='loadImg("${pokemonInfo.sprites.front_shiny}", this)' alt='${pokemonInfo.name}' onClick="addClassImg(this)">
+  `;
+}
+
 function addClass(div) {
   div.classList.toggle("seleccionado");
+}
+
+function addClassImg(img) {
+  img.classList.toggle("enEquipo");
 }
 
 function displayError(element, error) {
@@ -385,6 +439,10 @@ function loadImg(img, element) {
   element.src = img;
 }
 
+function clearTeamList() {
+  document.getElementById("teamResults").innerHTML = "";
+}
+
 function clearList() {
   document.getElementById("pokemonResults").innerHTML = "";
   document.getElementById("pokemonSearchResult").innerHTML = "";
@@ -392,6 +450,7 @@ function clearList() {
   document.querySelector("#saveFavourites").style.visibility = "hidden";
   document.querySelector("#saveChanges").style.visibility = "hidden";
   document.querySelector("#saveTeam").style.visibility = "hidden";
+  document.querySelector("#deleteTeam").style.visibility = "hidden";
 }
 
 function handleError(error, typeElement, item) {

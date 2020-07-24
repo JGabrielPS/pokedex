@@ -55,7 +55,13 @@
               Guardar Cambios
             </button>
           </div>
-          <div class="box" id="teamResult"></div>
+          <div class="box" id="teamResults"></div>
+          <button
+            class="btnSave"
+            type="button"
+            id="deleteTeam"
+            onClick="deletePokemonsInTeam('<%= userId %>')"
+          >Borrar pokemones</button>
         </div>
       </div>
     </div>
