@@ -83,7 +83,11 @@ function searchPokemon(event, user) {
               user,
               enableAddClass
             );
-            if (user !== "") showButton("savePokemon");
+            if (user !== "") {
+              showButton("savePokemon");
+              showButton("savePokemonInTeam");
+              showButton("deleteTeam");
+            }
           })
           .catch((error) => {
             displayError(name, error);
@@ -108,8 +112,9 @@ function searchPokemon(event, user) {
   }
 }
 
-function saveSelectedPokemon(user) {
+function saveSelectedPokemon(user, element) {
   const savedPokemon = document.querySelector(".seleccionado");
+  console.log(typeof savedPokemon);
   savePokemonData(
     user,
     +savedPokemon.dataset.pokemonid,
@@ -213,6 +218,24 @@ function listTeam(user) {
   }
 }
 
+function saveSelectedPokemonInTeam(user) {
+  const savedPokemon = document.querySelector(".seleccionado");
+  savePokemonInTeam(
+    user,
+    +savedPokemon.dataset.pokemonid,
+    savedPokemon.dataset.pokemonname
+  )
+    .then((response) => {
+      console.log(response);
+      alert(`Se guardo a ${response} con exito`);
+      listTeam(user);
+    })
+    .catch((error) => {
+      console.log(error);
+      alert(`Error: ${error.status}, el pokemon esta repetido`);
+    });
+}
+
 function saveTeam(user) {
   const checked = document.querySelectorAll(".seleccionado");
   //console.log([...checked].map((pokemon) => pokemon.dataset.pokemonid));
@@ -243,6 +266,41 @@ function saveTeam(user) {
     console.log(resolve);
   });
   //listTeam(user)
+}
+
+function deletePokemonsInTeam(user) {
+  const checked = document.querySelectorAll(".miniatura");
+  const eliminados = [...checked].filter(
+    (e) => e.getAttribute("class") === "miniatura"
+  );
+  //console.log(eliminados);
+  //console.log(eliminados.map((e) => e.dataset.pokemonid));
+  const promises = [];
+  eliminados.map((pokemon) =>
+    promises.push(deletePokemonInTeam(pokemon.dataset.pokemonid, user))
+  );
+  //console.log(promises);
+  Promise.allSettled(promises).then((resolve) => {
+    if (resolve.every((r) => r.status === "rejected")) {
+      alert(`Error al eliminar los pokemones, ${[...r]}`);
+    } else {
+      let [pass, err] = [[], []];
+      resolve.map((r) => {
+        console.log(r);
+        if (r.status === "fulfilled") pass.push(r.value);
+        else err.push(r.reason);
+      });
+      if (err.length === 0) alert("Se eliminaron todos los pokemones");
+      else
+        alert(
+          `Se eliminaron: ${[
+            ...pass,
+          ]}, los demas tuvieron los siguientes errores: ${[...err]}`
+        );
+    }
+    console.log(resolve);
+  });
+  listTeam(user);
 }
 
 function getPokemonData(pokemon_name) {
@@ -336,8 +394,26 @@ function savePokemonInTeam(user, pokemon_order, pokemon_name) {
         order: `${pokemon_order}`,
         name: `${pokemon_name}`,
       })
-      .then((response) => resolve(response))
-      .catch((error) => reject(error));
+      .then((response) => resolve(response.data))
+      .catch((error) => reject(error.response));
+  });
+}
+
+function deletePokemonInTeam(pokemonid, user) {
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "delete",
+      url: `http://localhost:3000/team/deletePokemon/${user}`,
+      data: {
+        order: `${pokemonid}`,
+      },
+    })
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((error) => {
+        reject(error);
+      });
   });
 }
 
@@ -412,7 +488,7 @@ function displayInfo(pokemonInfo, element, user, addClassEnabled, count) {
 
 function displayPokemonInTeam(pokemonInfo) {
   document.getElementById("teamResults").innerHTML += `
-  <img class="enEquipo" src='./rsc/load.gif' onload='loadImg("${pokemonInfo.sprites.front_shiny}", this)' alt='${pokemonInfo.name}' onClick="addClassImg(this)">
+  <img class="miniatura enEquipo" data-pokemonId="${pokemonInfo.id}" data-pokemonName="${pokemonInfo.name}" src='./rsc/load.gif' onload='loadImg("${pokemonInfo.sprites.front_shiny}", this)' alt='${pokemonInfo.name}' onClick="addClassImg(this)">
   `;
 }
 
@@ -447,6 +523,7 @@ function clearList() {
   document.getElementById("pokemonResults").innerHTML = "";
   document.getElementById("pokemonSearchResult").innerHTML = "";
   document.querySelector("#savePokemon").style.visibility = "hidden";
+  document.querySelector("#savePokemonInTeam").style.visibility = "hidden";
   document.querySelector("#saveFavourites").style.visibility = "hidden";
   document.querySelector("#saveChanges").style.visibility = "hidden";
   document.querySelector("#saveTeam").style.visibility = "hidden";

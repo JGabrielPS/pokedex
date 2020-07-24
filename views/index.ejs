@@ -26,9 +26,17 @@
               type="button"
               class="btnSave"
               id="savePokemon"
-              onClick="saveSelectedPokemon('<%= userId %>')"
+              onClick="saveSelectedPokemon('<%= userId %>',this)"
             >
-              Guardar Pokemon Seleccionado
+              Guardar Pokemon en Coleccion
+            </button>
+            <button
+              type="button"
+              class="btnSave"
+              id="savePokemonInTeam"
+              onClick="saveSelectedPokemonInTeam('<%= userId %>',this)"
+            >
+              Guardar Pokemon en Equipo
             </button>
             <button
               type="button"

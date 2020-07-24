@@ -33,7 +33,7 @@ router
   .delete("/deletePokemon/:user", handleEmptyBody, (req, res) => {
     const { order } = req.body;
     const { user } = req.params;
-    query = `DELETE FROM collections WHERE pokemon_order=${order} AND user_id = ${user}`;
+    query = `DELETE FROM teams WHERE pokemon_order=${order} AND user_id = ${user}`;
     connection.query(query, (err) => {
       if (err) return res.status(500).json(err);
       return res.status(200).send("se elimino exitosamente");
