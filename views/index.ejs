@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+  <%- include("layouts/header.ejs"); -%>
+
+  <body>
+    <div class="container">
+      <%- include("layouts/navbar.ejs"); -%>
+      <div class="row">
+        <div class="eight columns">
+          <div class="box" id="pokemonResults"></div>
+        </div>
+
+        <div class="four columns sticky-search">
+          <div>
+            <form onSubmit="searchPokemon(event, '<%= userId %>')">
+              <label for="pokemonName">Ingrese el nombre del pokemon</label
+              ><input type="text" id="pokemonName" required />
+              <div>
+                <button type="submit">Consultar</button>
+              </div>
+            </form>
+          </div>
+          <div class="box" id="pokemonSearchResult"></div>
+          <div>
+            <button
+              type="button"
+              class="btnSave"
+              id="savePokemon"
+              onClick="saveSelectedPokemon('<%= userId %>',this)"
+            >
+              Guardar Pokemon en Coleccion
+            </button>
+            <button
+              type="button"
+              class="btnSave"
+              id="savePokemonInTeam"
+              onClick="saveSelectedPokemonInTeam('<%= userId %>',this)"
+            >
+              Guardar Pokemon en Equipo
+            </button>
+            <button
+              type="button"
+              class="btnSave"
+              id="saveFavourites"
+              onClick="saveFavourites('<%= userId %>')"
+            >
+              Guardar en Coleccion
+            </button>
+            <button
+              type="button"
+              class="btnSave"
+              id="saveTeam"
+              onClick="saveTeam('<%= userId %>')"
+            >
+              Guardar en Equipo
+            </button>
+            <button
+              type="button"
+              class="btnSave"
+              id="saveChanges"
+              onClick="saveChanges('<%= userId %>')"
+            >
+              Guardar Cambios
+            </button>
+          </div>
+          <div class="box" id="teamResults"></div>
+          <button
+            class="btnSave"
+            type="button"
+            id="deleteTeam"
+            onClick="deletePokemonsInTeam('<%= userId %>')"
+          >Borrar pokemones</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/src/app.js"></script>
+  </body>
+</html>
