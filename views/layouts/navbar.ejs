@@ -1,7 +1,7 @@
 <div class="row">
   <div class="twelve columns">
     <nav>
-      <a href="/"><img class="nav-bar" src="/rsc/pokedexLogo.png" alt="" /></a>
+      <a href="/"><img class="nav-bar" src="/rsc/pokedexLogo.png" alt="Pokedex Home" width="180" height="60"/></a>
 
       <div class="nav-bar" id="nav-btns">
         <% if(locals.index && index){ %>
@@ -21,20 +21,12 @@
         >
           Listar Favoritos
         </button>
-        <!-- <button
-          type="button"
-          onClick="listTeam('<%= userId %>')"
-          class="nav-btn"
-          style="margin-right: 30em;"
-        >
-          Listar Equipo
-        </button> -->
         <% } %> <% } %> <% if(!userName){ %>
-        <a href="/auth/register">Registrarse</a>
-        <a href="/auth/login">Iniciar Sesión</a>
+        <a class="link-1" href="/auth/register">Registrarse</a>
+        <a class="link-1" href="/auth/login">Iniciar Sesión</a>
         <% } %> <% if(userName){ %>
         <p id="userdata" data-userid="<%= userId %>"><strong><%= userName %></strong></p>
-        <a href="/auth/logout">Cerrar Sesión</a>
+        <a class="link-2" href="/auth/logout">Cerrar Sesión</a>
         <% } %>
       </div>
     </nav>

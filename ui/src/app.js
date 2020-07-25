@@ -160,10 +160,10 @@ function saveFavourites(user) {
         if (err.length === 0) alert("Se guardaron todos los pokemones");
         else
           alert(`Se guardaron: ${[...pass]} y estaban repetidos: ${[...err]}`);
+        listPokemons(user);
       }
       console.log(resolve);
     });
-    listPokemons(user);
   } else {
     alert("No se selecciono ningun pokemon");
   }
@@ -198,10 +198,10 @@ function saveChanges(user) {
               ...pass,
             ]}, los demas tuvieron los siguientes errores: ${[...err]}`
           );
+        listFavourites(user);
       }
       console.log(resolve);
     });
-    listFavourites(user);
   } else {
     alert("No se selecciono ningun pokemon");
   }
@@ -274,9 +274,16 @@ function saveTeam(user) {
         )
       )
     );
+    console.log(promises);
     Promise.allSettled(promises).then((resolve) => {
       if (resolve.every((r) => r.status === "rejected")) {
-        alert("El equipo esta lleno");
+        alert(
+          resolve.every((r) => r.reason.status === 500)
+            ? "El pokemon ya esta en el equipo"
+            : "El equipo esta lleno"
+        );
+        //alert(resolve.reason.status === 500 ? "El pokemon ya esta en el equipo" : "El equipo esta lleno")
+        //alert("El equipo esta lleno");
       } else {
         let [pass, err] = [[], []];
         resolve.map((r) => {
@@ -327,10 +334,10 @@ function deletePokemonsInTeam(user) {
               ...pass,
             ]}, los demas tuvieron los siguientes errores: ${[...err]}`
           );
+        listTeam(user);
       }
       console.log(resolve);
     });
-    listTeam(user);
   } else {
     alert("No se selecciono ningun pokemon");
   }
