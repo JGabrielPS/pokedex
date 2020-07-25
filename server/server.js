@@ -71,24 +71,6 @@ app.use((req, res) =>
 );
 
 //express le dice al SO que escuche el puerto especificado y que si hay un evento http, lo informa
-<<<<<<< HEAD
-// app.listen(3000, () => {
-//   console.log('listening over port 3000');
-// });
-
-//el process.env.PORT lo da la aplicacion, es decir, setea el puerto
-app.set('port', process.env.PORT || 3000); 
-
-app.use(require('./routes/users'));
-
-app.listen(app.get('port'), () => {
-  console.log(`Listening on ${app.get('port')}`);
-});
-
-const morgan = require('morgan');
-
-app.use(morgan('dev'));
-=======
 app.listen(app.get("port"), (error) => {
   if (error) {
     console.log(`There was an error in port ${app.get("port")}: ${error}`);
@@ -97,4 +79,3 @@ app.listen(app.get("port"), (error) => {
     console.log(`Listening on ${app.get("port")}`);
   }
 });
->>>>>>> testing
