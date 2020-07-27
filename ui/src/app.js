@@ -12,7 +12,7 @@ function listPokemons(user) {
   clearList();
   let enableAddClass = false;
   limit += 10;
-  if (user !== "") {
+  if (user) {
     enableAddClass = true;
     getPokemons(user)
       .then((pokemonData) => {
@@ -27,6 +27,7 @@ function listPokemons(user) {
         );
         showButton("saveFavourites");
         showButton("saveTeam");
+        showButton("deleteTeam");
       })
       .catch((error) => console.log(error));
   } else {
@@ -70,7 +71,7 @@ function searchPokemon(event, user) {
   event.preventDefault();
   let enableAddClass = false;
   const name = document.getElementById("pokemonName").value;
-  if (user !== "") {
+  if (user) {
     enableAddClass = true;
     getPokemons(user)
       .then((pokemonData) => {
@@ -84,7 +85,7 @@ function searchPokemon(event, user) {
               user,
               enableAddClass
             );
-            if (user !== "") {
+            if (user) {
               showButton("savePokemon");
               showButton("savePokemonInTeam");
               showButton("deleteTeam");
@@ -105,7 +106,7 @@ function searchPokemon(event, user) {
           user,
           enableAddClass
         );
-        if (user !== "") showButton("savePokemon");
+        if (user) showButton("savePokemon");
       })
       .catch((error) => {
         displayError(name, error);
@@ -118,7 +119,7 @@ function saveSelectedPokemon(user, element) {
     document.querySelector(".seleccionado") === null
       ? ""
       : document.querySelector(".seleccionado");
-  if (savedPokemon !== "") {
+  if (savedPokemon) {
     savePokemonData(
       user,
       +savedPokemon.dataset.pokemonid,
@@ -209,7 +210,7 @@ function saveChanges(user) {
 
 function listTeam(user) {
   clearTeamList();
-  if (user !== "") {
+  if (user) {
     getPokemonTeam(user)
       .then((pokemonTeam) => {
         if ([...pokemonTeam].length > 0) {
@@ -239,7 +240,7 @@ function saveSelectedPokemonInTeam(user) {
     document.querySelector(".seleccionado") === null
       ? ""
       : document.querySelector(".seleccionado");
-  if (savedPokemon !== "") {
+  if (savedPokemon) {
     savePokemonInTeam(
       user,
       +savedPokemon.dataset.pokemonid,
