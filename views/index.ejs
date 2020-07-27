@@ -7,6 +7,7 @@
       <%- include("layouts/navbar.ejs"); -%>
       <div class="row">
         <div class="eight columns">
+          <p id="message"></p>
           <div class="box" id="pokemonResults"></div>
         </div>
 
@@ -69,7 +70,9 @@
             type="button"
             id="deleteTeam"
             onClick="deletePokemonsInTeam('<%= userId %>')"
-          >Borrar pokemones</button>
+          >
+            Borrar pokemones
+          </button>
         </div>
       </div>
     </div>

@@ -29,7 +29,9 @@ function listPokemons(user) {
         showButton("saveTeam");
         showButton("deleteTeam");
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        displayMsg("Falla al listar pokemons:", error);
+      });
   } else {
     displayPokemonList(
       limit,
@@ -55,7 +57,10 @@ function listFavourites(user) {
               displayInfo(pokemonData, "pokemonResults", user, true, count);
             })
             .catch((error) => {
-              alert(error);
+              displayMsg(
+                `Falla al consultar pokeapi para ${pokemon.pokemon_name}`,
+                error
+              );
             });
         });
       } else {
@@ -63,7 +68,9 @@ function listFavourites(user) {
           "La lista de favoritos esta vacia";
       }
     })
-    .catch((error) => alert(error));
+    .catch((error) => {
+      displayMsg("Falla al buscar pokemones del usuario:", error);
+    });
 }
 
 function searchPokemon(event, user) {
@@ -73,6 +80,7 @@ function searchPokemon(event, user) {
   const name = document.getElementById("pokemonName").value;
   if (user) {
     enableAddClass = true;
+    showButton("deleteTeam");
     getPokemons(user)
       .then((pokemonData) => {
         favouritesList = [...pokemonData];
@@ -88,14 +96,15 @@ function searchPokemon(event, user) {
             if (user) {
               showButton("savePokemon");
               showButton("savePokemonInTeam");
-              showButton("deleteTeam");
             }
           })
           .catch((error) => {
-            displayError(name, error);
+            displayMsg(`Hubo un error al buscar a ${name}:`, error);
           });
       })
-      .catch((error) => console.log(error));
+      .catch((error) =>
+        displayMsg("Falla al buscar pokemones del usuario:", error)
+      );
   } else {
     getPokemonData(name)
       .then((pokemonData) => {
@@ -109,7 +118,7 @@ function searchPokemon(event, user) {
         if (user) showButton("savePokemon");
       })
       .catch((error) => {
-        displayError(name, error);
+        displayMsg(`Hubo un error al buscar a ${name}:`, error);
       });
   }
 }
@@ -125,13 +134,15 @@ function saveSelectedPokemon(user, element) {
       +savedPokemon.dataset.pokemonid,
       savedPokemon.dataset.pokemonname
     )
-      .then((response) => alert(`Se guardo a ${response} con exito`))
+      .then((response) => displayMsg(`Se guardo a ${response} con exito`, ""))
       .catch((error) => {
-        console.log(error);
-        alert(`Error: ${error.status}, ${error.data} esta repetido dos veces`);
+        displayMsg(`${error.data} esta repetido dos veces:`, error);
       });
   } else {
-    alert("No se selecciono ningun pokemon");
+    displayMsg(
+      "No se selecciono ningun pokemon",
+      new Error("Ningun elemento seleccionado")
+    );
   }
 }
 
@@ -150,7 +161,10 @@ function saveFavourites(user) {
     });
     Promise.allSettled(promises).then((resolve) => {
       if (resolve.every((r) => r.status === "rejected")) {
-        alert("Todos los pokemones seleccionados estan repetidos dos veces");
+        displayMsg(
+          "Todos los pokemones seleccionados estan repetidos dos veces",
+          new Error("All promises rejected")
+        );
       } else {
         let [pass, err] = [[], []];
         resolve.map((r, i) => {
@@ -158,15 +172,22 @@ function saveFavourites(user) {
           if (r.status === "fulfilled") pass.push(r.value);
           else err.push(r.reason.data);
         });
-        if (err.length === 0) alert("Se guardaron todos los pokemones");
-        else
-          alert(`Se guardaron: ${[...pass]} y estaban repetidos: ${[...err]}`);
         listPokemons(user);
+        if (err.length === 0)
+          displayMsg("Se guardaron todos los pokemones", "");
+        else
+          displayMsg(
+            `Se guardaron: ${[...pass]} y estaban repetidos: ${[...err]}`,
+            ""
+          );
       }
       console.log(resolve);
     });
   } else {
-    alert("No se selecciono ningun pokemon");
+    displayMsg(
+      "No se selecciono ningun pokemon",
+      new Error("Ningun elemento seleccionado")
+    );
   }
 }
 
@@ -184,7 +205,10 @@ function saveChanges(user) {
     //console.log(promises);
     Promise.allSettled(promises).then((resolve) => {
       if (resolve.every((r) => r.status === "rejected")) {
-        alert(`Error al eliminar los pokemones, ${[...r]}`);
+        displayMsg(
+          `Error al eliminar los pokemones, ${[...r]}`,
+          new Error("All promises rejected")
+        );
       } else {
         let [pass, err] = [[], []];
         resolve.map((r) => {
@@ -192,19 +216,24 @@ function saveChanges(user) {
           if (r.status === "fulfilled") pass.push(r.value);
           else err.push(r.reason);
         });
-        if (err.length === 0) alert("Se eliminaron todos los pokemones");
+        listFavourites(user);
+        if (err.length === 0)
+          displayMsg("Se eliminaron todos los pokemones", "");
         else
-          alert(
+          displayMsg(
             `Se eliminaron: ${[
               ...pass,
-            ]}, los demas tuvieron los siguientes errores: ${[...err]}`
+            ]}, los demas tuvieron los siguientes errores: ${[...err]}`,
+            ""
           );
-        listFavourites(user);
       }
       console.log(resolve);
     });
   } else {
-    alert("No se selecciono ningun pokemon");
+    displayMsg(
+      "No se selecciono ningun pokemon",
+      new Error("Ningun elemento seleccionado")
+    );
   }
 }
 
@@ -220,7 +249,7 @@ function listTeam(user) {
                 displayPokemonInTeam(pokemonData);
               })
               .catch((error) => {
-                alert(error);
+                displayMsg(`Falla al buscar a ${pokemon.pokemon_name}`, error);
               });
           });
           showButton("deleteTeam");
@@ -229,7 +258,7 @@ function listTeam(user) {
             "La lista del equipo esta vacia";
         }
       })
-      .catch((error) => alert(error));
+      .catch((error) => displayMsg("Error al listar equipo:", error));
   } else {
     console.log("No hay usuario logueado");
   }
@@ -248,15 +277,17 @@ function saveSelectedPokemonInTeam(user) {
     )
       .then((response) => {
         console.log(response);
-        alert(`Se guardo a ${response} con exito`);
+        displayMsg(`Se guardo a ${response} con exito`, "");
         listTeam(user);
       })
       .catch((error) => {
-        console.log(error);
-        alert(`Error: ${error.status}, el pokemon esta repetido`);
+        displayMsg(`El pokemon esta repetido o el equipo esta lleno`, error);
       });
   } else {
-    alert("No se selecciono ningun pokemon");
+    displayMsg(
+      "No se selecciono ningun pokemon",
+      new Error("Ningun elemento seleccionado")
+    );
   }
 }
 
@@ -278,13 +309,10 @@ function saveTeam(user) {
     console.log(promises);
     Promise.allSettled(promises).then((resolve) => {
       if (resolve.every((r) => r.status === "rejected")) {
-        alert(
-          resolve.every((r) => r.reason.status === 500)
-            ? "El pokemon ya esta en el equipo"
-            : "El equipo esta lleno"
-        );
-        //alert(resolve.reason.status === 500 ? "El pokemon ya esta en el equipo" : "El equipo esta lleno")
-        //alert("El equipo esta lleno");
+        const msg = resolve.every((r) => r.reason.status === 500)
+          ? "El pokemon ya esta en el equipo"
+          : "El equipo esta lleno";
+        displayMsg(msg, new Error("All promises rejected"));
       } else {
         let [pass, err] = [[], []];
         resolve.map((r) => {
@@ -292,16 +320,22 @@ function saveTeam(user) {
           if (r.status === "fulfilled") pass.push(r.value);
           else err.push(r.reason.data);
         });
-        if (err.length === 0) alert("Se guardaron todos los pokemones");
+        if (err.length === 0)
+          displayMsg("Se guardaron todos los pokemones", "");
         else
-          alert(`Se guardaron: ${[...pass]} y estaban repetidos: ${[...err]}`);
+          displayMsg(
+            `Se guardaron: ${[...pass]} y estaban repetidos: ${[...err]}`,
+            ""
+          );
         listTeam(user);
       }
       console.log(resolve);
     });
-    //listTeam(user)
   } else {
-    alert("No se selecciono ningun pokemon");
+    displayMsg(
+      "No se selecciono ningun pokemon",
+      new Error("Ningun elemento seleccionado")
+    );
   }
 }
 
@@ -320,7 +354,7 @@ function deletePokemonsInTeam(user) {
     //console.log(promises);
     Promise.allSettled(promises).then((resolve) => {
       if (resolve.every((r) => r.status === "rejected")) {
-        alert(`Error al eliminar los pokemones, ${[...r]}`);
+        displayMsg(`Error al eliminar los pokemones, ${[...r]}`, new Error("All promises rejected"));
       } else {
         let [pass, err] = [[], []];
         resolve.map((r) => {
@@ -328,19 +362,24 @@ function deletePokemonsInTeam(user) {
           if (r.status === "fulfilled") pass.push(r.value);
           else err.push(r.reason);
         });
-        if (err.length === 0) alert("Se eliminaron todos los pokemones");
+        if (err.length === 0)
+          displayMsg("Se eliminaron todos los pokemones", "");
         else
-          alert(
+          displayMsg(
             `Se eliminaron: ${[
               ...pass,
-            ]}, los demas tuvieron los siguientes errores: ${[...err]}`
+            ]}, los demas tuvieron los siguientes errores: ${[...err]}`,
+            ""
           );
         listTeam(user);
       }
       console.log(resolve);
     });
   } else {
-    alert("No se selecciono ningun pokemon");
+    displayMsg(
+      "No se selecciono ningun pokemon",
+      new Error("Ningun elemento seleccionado")
+    );
   }
 }
 
@@ -541,11 +580,24 @@ function addClassImg(img) {
   img.classList.toggle("enEquipo");
 }
 
-function displayError(element, error) {
-  console.log(error);
-  document.getElementById("pokemonResults").innerHTML = `
-    <p id="error-message">${element} ${error.data}, error ${error.status}</p>
-  `;
+function displayMsg(element, error) {
+  const msg = document.querySelector("#message");
+  msg.style.visibility = "visible";
+  if (error) {
+    console.log(error);
+    if (error.status){
+      msg.textContent = `${element} ${error.data}, error ${error.status}`;
+    }
+    else{
+      msg.textContent = `${element}, ${error}`;
+    } 
+    msg.classList.remove("pass-message");
+    msg.classList.add("error-message");
+  } else {
+    msg.textContent = `${element}`;
+    msg.classList.remove("error-message");
+    msg.classList.add("pass-message");
+  }
 }
 
 function showButton(button) {
@@ -562,6 +614,7 @@ function clearTeamList() {
 
 function clearList() {
   document.getElementById("pokemonResults").innerHTML = "";
+  document.querySelector("#message").style.visibility = "hidden";
   document.getElementById("pokemonSearchResult").innerHTML = "";
   document.querySelector("#savePokemon").style.visibility = "hidden";
   document.querySelector("#savePokemonInTeam").style.visibility = "hidden";

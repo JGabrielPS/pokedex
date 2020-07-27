@@ -55,8 +55,12 @@ hr {
   );
 }
 
-#error-message{
+.error-message{
   color:red;
+}
+
+.pass-message{
+  color: green;
 }
 
 .seleccionado{
